@@ -1,0 +1,3 @@
+[submodule "public/vendor/pokeapi-sprites"]
+	path = public/vendor/pokeapi-sprites
+	url = https://github.com/PokeAPI/sprites.git

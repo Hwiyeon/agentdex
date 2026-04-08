@@ -1,0 +1,9 @@
+.codex
+data/state.json
+data/pokedex.json
+data/runtime/
+data/area_mask.backup.png
+node_modules/
+*.log
+npm-debug.log*
+.DS_Store

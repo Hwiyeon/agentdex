@@ -1,0 +1,14 @@
+{
+  "name": "poke-agent-safari",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dependency-free local watcher + pixel dashboard for Claude Code transcript activity",
+  "main": "cli.js",
+  "scripts": {
+    "setup:assets": "node tools/setup_poke_assets.js",
+    "watch": "node cli.js watch",
+    "mock": "node cli.js mock",
+    "test": "node test/claude-code-transcripts.test.js && node test/review-fixes.test.js && node test/pokedex.test.js && node test/setup-scripts.test.js && node test/cli-persistence.test.js"
+  },
+  "license": "MIT"
+}

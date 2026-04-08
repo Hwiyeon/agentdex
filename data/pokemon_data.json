@@ -1,0 +1,2525 @@
+{
+  "generated_at": "2026-04-02T12:12:46.781605+00:00",
+  "range": "1-251",
+  "total": 251,
+  "skipped": [],
+  "tier_distribution": {
+    "1": 84,
+    "2": 73,
+    "3": 56,
+    "4": 27,
+    "5": 11
+  },
+  "pokemon": [
+    {
+      "pokemon_id": 1,
+      "name": "bulbasaur",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 318,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 2,
+      "name": "ivysaur",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 3,
+      "name": "venusaur",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "grass",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 4,
+      "name": "charmander",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 309,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 5,
+      "name": "charmeleon",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 6,
+      "name": "charizard",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 534,
+      "primary_type": "fire",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 7,
+      "name": "squirtle",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 314,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 8,
+      "name": "wartortle",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 9,
+      "name": "blastoise",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 530,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 10,
+      "name": "caterpie",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 195,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 11,
+      "name": "metapod",
+      "habitat": "forest",
+      "capture_rate": 120,
+      "base_stat_total": 205,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 12,
+      "name": "butterfree",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 395,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 13,
+      "name": "weedle",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 195,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 14,
+      "name": "kakuna",
+      "habitat": "forest",
+      "capture_rate": 120,
+      "base_stat_total": 205,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 15,
+      "name": "beedrill",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 395,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 16,
+      "name": "pidgey",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 251,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 17,
+      "name": "pidgeotto",
+      "habitat": "forest",
+      "capture_rate": 120,
+      "base_stat_total": 349,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 18,
+      "name": "pidgeot",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 479,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 19,
+      "name": "rattata",
+      "habitat": "grassland",
+      "capture_rate": 255,
+      "base_stat_total": 253,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 20,
+      "name": "raticate",
+      "habitat": "grassland",
+      "capture_rate": 127,
+      "base_stat_total": 413,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 21,
+      "name": "spearow",
+      "habitat": "rough-terrain",
+      "capture_rate": 255,
+      "base_stat_total": 262,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 22,
+      "name": "fearow",
+      "habitat": "rough-terrain",
+      "capture_rate": 90,
+      "base_stat_total": 442,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 23,
+      "name": "ekans",
+      "habitat": "grassland",
+      "capture_rate": 255,
+      "base_stat_total": 288,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 24,
+      "name": "arbok",
+      "habitat": "grassland",
+      "capture_rate": 90,
+      "base_stat_total": 448,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 25,
+      "name": "pikachu",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 320,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 26,
+      "name": "raichu",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 485,
+      "primary_type": "electric",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 27,
+      "name": "sandshrew",
+      "habitat": "rough-terrain",
+      "capture_rate": 255,
+      "base_stat_total": 300,
+      "primary_type": "ground",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 28,
+      "name": "sandslash",
+      "habitat": "rough-terrain",
+      "capture_rate": 90,
+      "base_stat_total": 450,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 29,
+      "name": "nidoran-f",
+      "habitat": "grassland",
+      "capture_rate": 235,
+      "base_stat_total": 275,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 30,
+      "name": "nidorina",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 365,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 31,
+      "name": "nidoqueen",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 505,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 32,
+      "name": "nidoran-m",
+      "habitat": "grassland",
+      "capture_rate": 235,
+      "base_stat_total": 273,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 33,
+      "name": "nidorino",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 365,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 34,
+      "name": "nidoking",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 505,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 35,
+      "name": "clefairy",
+      "habitat": "mountain",
+      "capture_rate": 150,
+      "base_stat_total": 323,
+      "primary_type": "fairy",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 36,
+      "name": "clefable",
+      "habitat": "mountain",
+      "capture_rate": 25,
+      "base_stat_total": 483,
+      "primary_type": "fairy",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 37,
+      "name": "vulpix",
+      "habitat": "grassland",
+      "capture_rate": 190,
+      "base_stat_total": 299,
+      "primary_type": "fire",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 38,
+      "name": "ninetales",
+      "habitat": "grassland",
+      "capture_rate": 75,
+      "base_stat_total": 505,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 39,
+      "name": "jigglypuff",
+      "habitat": "grassland",
+      "capture_rate": 170,
+      "base_stat_total": 270,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 40,
+      "name": "wigglytuff",
+      "habitat": "grassland",
+      "capture_rate": 50,
+      "base_stat_total": 435,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 41,
+      "name": "zubat",
+      "habitat": "cave",
+      "capture_rate": 255,
+      "base_stat_total": 245,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 42,
+      "name": "golbat",
+      "habitat": "cave",
+      "capture_rate": 90,
+      "base_stat_total": 455,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 43,
+      "name": "oddish",
+      "habitat": "grassland",
+      "capture_rate": 255,
+      "base_stat_total": 320,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 44,
+      "name": "gloom",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 395,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 45,
+      "name": "vileplume",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 46,
+      "name": "paras",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 285,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 47,
+      "name": "parasect",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 405,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 48,
+      "name": "venonat",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 305,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 49,
+      "name": "venomoth",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 450,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 50,
+      "name": "diglett",
+      "habitat": "cave",
+      "capture_rate": 255,
+      "base_stat_total": 265,
+      "primary_type": "ground",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 51,
+      "name": "dugtrio",
+      "habitat": "cave",
+      "capture_rate": 50,
+      "base_stat_total": 425,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 52,
+      "name": "meowth",
+      "habitat": "urban",
+      "capture_rate": 255,
+      "base_stat_total": 290,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 53,
+      "name": "persian",
+      "habitat": "urban",
+      "capture_rate": 90,
+      "base_stat_total": 440,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 54,
+      "name": "psyduck",
+      "habitat": "waters-edge",
+      "capture_rate": 190,
+      "base_stat_total": 320,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 55,
+      "name": "golduck",
+      "habitat": "waters-edge",
+      "capture_rate": 75,
+      "base_stat_total": 500,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 56,
+      "name": "mankey",
+      "habitat": "mountain",
+      "capture_rate": 190,
+      "base_stat_total": 305,
+      "primary_type": "fighting",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 57,
+      "name": "primeape",
+      "habitat": "mountain",
+      "capture_rate": 75,
+      "base_stat_total": 455,
+      "primary_type": "fighting",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 58,
+      "name": "growlithe",
+      "habitat": "grassland",
+      "capture_rate": 190,
+      "base_stat_total": 350,
+      "primary_type": "fire",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 59,
+      "name": "arcanine",
+      "habitat": "grassland",
+      "capture_rate": 75,
+      "base_stat_total": 555,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 60,
+      "name": "poliwag",
+      "habitat": "waters-edge",
+      "capture_rate": 255,
+      "base_stat_total": 300,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 61,
+      "name": "poliwhirl",
+      "habitat": "waters-edge",
+      "capture_rate": 120,
+      "base_stat_total": 385,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 62,
+      "name": "poliwrath",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 510,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 63,
+      "name": "abra",
+      "habitat": "urban",
+      "capture_rate": 200,
+      "base_stat_total": 310,
+      "primary_type": "psychic",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 64,
+      "name": "kadabra",
+      "habitat": "urban",
+      "capture_rate": 100,
+      "base_stat_total": 400,
+      "primary_type": "psychic",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 65,
+      "name": "alakazam",
+      "habitat": "urban",
+      "capture_rate": 50,
+      "base_stat_total": 500,
+      "primary_type": "psychic",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 66,
+      "name": "machop",
+      "habitat": "mountain",
+      "capture_rate": 180,
+      "base_stat_total": 305,
+      "primary_type": "fighting",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 67,
+      "name": "machoke",
+      "habitat": "mountain",
+      "capture_rate": 90,
+      "base_stat_total": 405,
+      "primary_type": "fighting",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 68,
+      "name": "machamp",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 505,
+      "primary_type": "fighting",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 69,
+      "name": "bellsprout",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 300,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 70,
+      "name": "weepinbell",
+      "habitat": "forest",
+      "capture_rate": 120,
+      "base_stat_total": 390,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 71,
+      "name": "victreebel",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 72,
+      "name": "tentacool",
+      "habitat": "sea",
+      "capture_rate": 190,
+      "base_stat_total": 335,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 73,
+      "name": "tentacruel",
+      "habitat": "sea",
+      "capture_rate": 60,
+      "base_stat_total": 515,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 74,
+      "name": "geodude",
+      "habitat": "mountain",
+      "capture_rate": 255,
+      "base_stat_total": 300,
+      "primary_type": "rock",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 75,
+      "name": "graveler",
+      "habitat": "mountain",
+      "capture_rate": 120,
+      "base_stat_total": 390,
+      "primary_type": "rock",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 76,
+      "name": "golem",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 495,
+      "primary_type": "rock",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 77,
+      "name": "ponyta",
+      "habitat": "grassland",
+      "capture_rate": 190,
+      "base_stat_total": 410,
+      "primary_type": "fire",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 78,
+      "name": "rapidash",
+      "habitat": "grassland",
+      "capture_rate": 60,
+      "base_stat_total": 500,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 79,
+      "name": "slowpoke",
+      "habitat": "waters-edge",
+      "capture_rate": 190,
+      "base_stat_total": 315,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 80,
+      "name": "slowbro",
+      "habitat": "waters-edge",
+      "capture_rate": 75,
+      "base_stat_total": 490,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 81,
+      "name": "magnemite",
+      "habitat": "rough-terrain",
+      "capture_rate": 190,
+      "base_stat_total": 325,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 82,
+      "name": "magneton",
+      "habitat": "rough-terrain",
+      "capture_rate": 60,
+      "base_stat_total": 465,
+      "primary_type": "electric",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 83,
+      "name": "farfetchd",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 377,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 84,
+      "name": "doduo",
+      "habitat": "grassland",
+      "capture_rate": 190,
+      "base_stat_total": 310,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 85,
+      "name": "dodrio",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 470,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 86,
+      "name": "seel",
+      "habitat": "sea",
+      "capture_rate": 190,
+      "base_stat_total": 325,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 87,
+      "name": "dewgong",
+      "habitat": "sea",
+      "capture_rate": 75,
+      "base_stat_total": 475,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 88,
+      "name": "grimer",
+      "habitat": "urban",
+      "capture_rate": 190,
+      "base_stat_total": 325,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 89,
+      "name": "muk",
+      "habitat": "urban",
+      "capture_rate": 75,
+      "base_stat_total": 500,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 90,
+      "name": "shellder",
+      "habitat": "sea",
+      "capture_rate": 190,
+      "base_stat_total": 305,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 91,
+      "name": "cloyster",
+      "habitat": "sea",
+      "capture_rate": 60,
+      "base_stat_total": 525,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 92,
+      "name": "gastly",
+      "habitat": "cave",
+      "capture_rate": 190,
+      "base_stat_total": 310,
+      "primary_type": "ghost",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 93,
+      "name": "haunter",
+      "habitat": "cave",
+      "capture_rate": 90,
+      "base_stat_total": 405,
+      "primary_type": "ghost",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 94,
+      "name": "gengar",
+      "habitat": "cave",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "ghost",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 95,
+      "name": "onix",
+      "habitat": "cave",
+      "capture_rate": 45,
+      "base_stat_total": 385,
+      "primary_type": "rock",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 96,
+      "name": "drowzee",
+      "habitat": "grassland",
+      "capture_rate": 190,
+      "base_stat_total": 328,
+      "primary_type": "psychic",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 97,
+      "name": "hypno",
+      "habitat": "grassland",
+      "capture_rate": 75,
+      "base_stat_total": 483,
+      "primary_type": "psychic",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 98,
+      "name": "krabby",
+      "habitat": "waters-edge",
+      "capture_rate": 225,
+      "base_stat_total": 325,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 99,
+      "name": "kingler",
+      "habitat": "waters-edge",
+      "capture_rate": 60,
+      "base_stat_total": 475,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 100,
+      "name": "voltorb",
+      "habitat": "urban",
+      "capture_rate": 190,
+      "base_stat_total": 330,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 101,
+      "name": "electrode",
+      "habitat": "urban",
+      "capture_rate": 60,
+      "base_stat_total": 490,
+      "primary_type": "electric",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 102,
+      "name": "exeggcute",
+      "habitat": "forest",
+      "capture_rate": 90,
+      "base_stat_total": 325,
+      "primary_type": "grass",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 103,
+      "name": "exeggutor",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 530,
+      "primary_type": "grass",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 104,
+      "name": "cubone",
+      "habitat": "mountain",
+      "capture_rate": 190,
+      "base_stat_total": 320,
+      "primary_type": "ground",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 105,
+      "name": "marowak",
+      "habitat": "mountain",
+      "capture_rate": 75,
+      "base_stat_total": 425,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 106,
+      "name": "hitmonlee",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 455,
+      "primary_type": "fighting",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 107,
+      "name": "hitmonchan",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 455,
+      "primary_type": "fighting",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 108,
+      "name": "lickitung",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 385,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 109,
+      "name": "koffing",
+      "habitat": "urban",
+      "capture_rate": 190,
+      "base_stat_total": 340,
+      "primary_type": "poison",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 110,
+      "name": "weezing",
+      "habitat": "urban",
+      "capture_rate": 60,
+      "base_stat_total": 490,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 111,
+      "name": "rhyhorn",
+      "habitat": "rough-terrain",
+      "capture_rate": 120,
+      "base_stat_total": 345,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 112,
+      "name": "rhydon",
+      "habitat": "rough-terrain",
+      "capture_rate": 60,
+      "base_stat_total": 485,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 113,
+      "name": "chansey",
+      "habitat": "urban",
+      "capture_rate": 30,
+      "base_stat_total": 450,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 114,
+      "name": "tangela",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 435,
+      "primary_type": "grass",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 115,
+      "name": "kangaskhan",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 116,
+      "name": "horsea",
+      "habitat": "sea",
+      "capture_rate": 225,
+      "base_stat_total": 295,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 117,
+      "name": "seadra",
+      "habitat": "sea",
+      "capture_rate": 75,
+      "base_stat_total": 440,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 118,
+      "name": "goldeen",
+      "habitat": "sea",
+      "capture_rate": 225,
+      "base_stat_total": 320,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 119,
+      "name": "seaking",
+      "habitat": "waters-edge",
+      "capture_rate": 60,
+      "base_stat_total": 450,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 120,
+      "name": "staryu",
+      "habitat": "sea",
+      "capture_rate": 225,
+      "base_stat_total": 340,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 121,
+      "name": "starmie",
+      "habitat": "sea",
+      "capture_rate": 60,
+      "base_stat_total": 520,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 122,
+      "name": "mr-mime",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 460,
+      "primary_type": "psychic",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 123,
+      "name": "scyther",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "bug",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 124,
+      "name": "jynx",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 455,
+      "primary_type": "ice",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 125,
+      "name": "electabuzz",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "electric",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 126,
+      "name": "magmar",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 495,
+      "primary_type": "fire",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 127,
+      "name": "pinsir",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "bug",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 128,
+      "name": "tauros",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 129,
+      "name": "magikarp",
+      "habitat": "sea",
+      "capture_rate": 255,
+      "base_stat_total": 200,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 130,
+      "name": "gyarados",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 540,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 131,
+      "name": "lapras",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 535,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 132,
+      "name": "ditto",
+      "habitat": "urban",
+      "capture_rate": 35,
+      "base_stat_total": 288,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 133,
+      "name": "eevee",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 325,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 134,
+      "name": "vaporeon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 135,
+      "name": "jolteon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "electric",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 136,
+      "name": "flareon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "fire",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 137,
+      "name": "porygon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 395,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 138,
+      "name": "omanyte",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 355,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 139,
+      "name": "omastar",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 495,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 140,
+      "name": "kabuto",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 355,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 141,
+      "name": "kabutops",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 495,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 142,
+      "name": "aerodactyl",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 515,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 143,
+      "name": "snorlax",
+      "habitat": "mountain",
+      "capture_rate": 25,
+      "base_stat_total": 540,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 144,
+      "name": "articuno",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "ice",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 145,
+      "name": "zapdos",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "electric",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 146,
+      "name": "moltres",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "fire",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 147,
+      "name": "dratini",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 300,
+      "primary_type": "dragon",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 148,
+      "name": "dragonair",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 420,
+      "primary_type": "dragon",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 149,
+      "name": "dragonite",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 600,
+      "primary_type": "dragon",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 150,
+      "name": "mewtwo",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 680,
+      "primary_type": "psychic",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 151,
+      "name": "mew",
+      "habitat": "rare",
+      "capture_rate": 45,
+      "base_stat_total": 600,
+      "primary_type": "psychic",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 152,
+      "name": "chikorita",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 318,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 153,
+      "name": "bayleef",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 154,
+      "name": "meganium",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "grass",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 155,
+      "name": "cyndaquil",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 309,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 156,
+      "name": "quilava",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 157,
+      "name": "typhlosion",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 534,
+      "primary_type": "fire",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 158,
+      "name": "totodile",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 314,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 159,
+      "name": "croconaw",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 160,
+      "name": "feraligatr",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 530,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 161,
+      "name": "sentret",
+      "habitat": "grassland",
+      "capture_rate": 255,
+      "base_stat_total": 215,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 162,
+      "name": "furret",
+      "habitat": "grassland",
+      "capture_rate": 90,
+      "base_stat_total": 415,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 163,
+      "name": "hoothoot",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 262,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 164,
+      "name": "noctowl",
+      "habitat": "forest",
+      "capture_rate": 90,
+      "base_stat_total": 452,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 165,
+      "name": "ledyba",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 265,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 166,
+      "name": "ledian",
+      "habitat": "forest",
+      "capture_rate": 90,
+      "base_stat_total": 390,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 167,
+      "name": "spinarak",
+      "habitat": "forest",
+      "capture_rate": 255,
+      "base_stat_total": 250,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 168,
+      "name": "ariados",
+      "habitat": "forest",
+      "capture_rate": 90,
+      "base_stat_total": 400,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 169,
+      "name": "crobat",
+      "habitat": "cave",
+      "capture_rate": 90,
+      "base_stat_total": 535,
+      "primary_type": "poison",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 170,
+      "name": "chinchou",
+      "habitat": "sea",
+      "capture_rate": 190,
+      "base_stat_total": 330,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 171,
+      "name": "lanturn",
+      "habitat": "sea",
+      "capture_rate": 75,
+      "base_stat_total": 460,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 172,
+      "name": "pichu",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 205,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 173,
+      "name": "cleffa",
+      "habitat": "mountain",
+      "capture_rate": 150,
+      "base_stat_total": 218,
+      "primary_type": "fairy",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 174,
+      "name": "igglybuff",
+      "habitat": "grassland",
+      "capture_rate": 170,
+      "base_stat_total": 210,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 175,
+      "name": "togepi",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 245,
+      "primary_type": "fairy",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 176,
+      "name": "togetic",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 405,
+      "primary_type": "fairy",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 177,
+      "name": "natu",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 320,
+      "primary_type": "psychic",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 178,
+      "name": "xatu",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 470,
+      "primary_type": "psychic",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 179,
+      "name": "mareep",
+      "habitat": "grassland",
+      "capture_rate": 235,
+      "base_stat_total": 280,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 180,
+      "name": "flaaffy",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 365,
+      "primary_type": "electric",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 181,
+      "name": "ampharos",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 510,
+      "primary_type": "electric",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 182,
+      "name": "bellossom",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 183,
+      "name": "marill",
+      "habitat": "waters-edge",
+      "capture_rate": 190,
+      "base_stat_total": 250,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 184,
+      "name": "azumarill",
+      "habitat": "waters-edge",
+      "capture_rate": 75,
+      "base_stat_total": 420,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 185,
+      "name": "sudowoodo",
+      "habitat": "forest",
+      "capture_rate": 65,
+      "base_stat_total": 410,
+      "primary_type": "rock",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 186,
+      "name": "politoed",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "water",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 187,
+      "name": "hoppip",
+      "habitat": "grassland",
+      "capture_rate": 255,
+      "base_stat_total": 250,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 188,
+      "name": "skiploom",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 340,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 189,
+      "name": "jumpluff",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 460,
+      "primary_type": "grass",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 190,
+      "name": "aipom",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 360,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 191,
+      "name": "sunkern",
+      "habitat": "grassland",
+      "capture_rate": 235,
+      "base_stat_total": 180,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 192,
+      "name": "sunflora",
+      "habitat": "grassland",
+      "capture_rate": 120,
+      "base_stat_total": 425,
+      "primary_type": "grass",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 193,
+      "name": "yanma",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 390,
+      "primary_type": "bug",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 194,
+      "name": "wooper",
+      "habitat": "waters-edge",
+      "capture_rate": 255,
+      "base_stat_total": 210,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 195,
+      "name": "quagsire",
+      "habitat": "waters-edge",
+      "capture_rate": 90,
+      "base_stat_total": 430,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 196,
+      "name": "espeon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "psychic",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 197,
+      "name": "umbreon",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 525,
+      "primary_type": "dark",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 198,
+      "name": "murkrow",
+      "habitat": "forest",
+      "capture_rate": 30,
+      "base_stat_total": 405,
+      "primary_type": "dark",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 199,
+      "name": "slowking",
+      "habitat": "waters-edge",
+      "capture_rate": 70,
+      "base_stat_total": 490,
+      "primary_type": "water",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 200,
+      "name": "misdreavus",
+      "habitat": "cave",
+      "capture_rate": 45,
+      "base_stat_total": 435,
+      "primary_type": "ghost",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 201,
+      "name": "unown",
+      "habitat": "rare",
+      "capture_rate": 225,
+      "base_stat_total": 336,
+      "primary_type": "psychic",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 202,
+      "name": "wobbuffet",
+      "habitat": "cave",
+      "capture_rate": 45,
+      "base_stat_total": 405,
+      "primary_type": "psychic",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 203,
+      "name": "girafarig",
+      "habitat": "grassland",
+      "capture_rate": 60,
+      "base_stat_total": 455,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 204,
+      "name": "pineco",
+      "habitat": "forest",
+      "capture_rate": 190,
+      "base_stat_total": 290,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 205,
+      "name": "forretress",
+      "habitat": "forest",
+      "capture_rate": 75,
+      "base_stat_total": 465,
+      "primary_type": "bug",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 206,
+      "name": "dunsparce",
+      "habitat": "cave",
+      "capture_rate": 190,
+      "base_stat_total": 415,
+      "primary_type": "normal",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 207,
+      "name": "gligar",
+      "habitat": "mountain",
+      "capture_rate": 60,
+      "base_stat_total": 430,
+      "primary_type": "ground",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 208,
+      "name": "steelix",
+      "habitat": "cave",
+      "capture_rate": 25,
+      "base_stat_total": 510,
+      "primary_type": "steel",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 209,
+      "name": "snubbull",
+      "habitat": "urban",
+      "capture_rate": 190,
+      "base_stat_total": 300,
+      "primary_type": "fairy",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 210,
+      "name": "granbull",
+      "habitat": "urban",
+      "capture_rate": 75,
+      "base_stat_total": 450,
+      "primary_type": "fairy",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 211,
+      "name": "qwilfish",
+      "habitat": "waters-edge",
+      "capture_rate": 45,
+      "base_stat_total": 440,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 212,
+      "name": "scizor",
+      "habitat": "grassland",
+      "capture_rate": 25,
+      "base_stat_total": 500,
+      "primary_type": "bug",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 213,
+      "name": "shuckle",
+      "habitat": "mountain",
+      "capture_rate": 190,
+      "base_stat_total": 505,
+      "primary_type": "bug",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 214,
+      "name": "heracross",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "bug",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 215,
+      "name": "sneasel",
+      "habitat": "forest",
+      "capture_rate": 60,
+      "base_stat_total": 430,
+      "primary_type": "dark",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 216,
+      "name": "teddiursa",
+      "habitat": "mountain",
+      "capture_rate": 120,
+      "base_stat_total": 330,
+      "primary_type": "normal",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 217,
+      "name": "ursaring",
+      "habitat": "mountain",
+      "capture_rate": 60,
+      "base_stat_total": 500,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 218,
+      "name": "slugma",
+      "habitat": "mountain",
+      "capture_rate": 190,
+      "base_stat_total": 250,
+      "primary_type": "fire",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 219,
+      "name": "magcargo",
+      "habitat": "mountain",
+      "capture_rate": 75,
+      "base_stat_total": 430,
+      "primary_type": "fire",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 220,
+      "name": "swinub",
+      "habitat": "cave",
+      "capture_rate": 225,
+      "base_stat_total": 250,
+      "primary_type": "ice",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 221,
+      "name": "piloswine",
+      "habitat": "cave",
+      "capture_rate": 75,
+      "base_stat_total": 450,
+      "primary_type": "ice",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 222,
+      "name": "corsola",
+      "habitat": "sea",
+      "capture_rate": 60,
+      "base_stat_total": 410,
+      "primary_type": "water",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 223,
+      "name": "remoraid",
+      "habitat": "sea",
+      "capture_rate": 190,
+      "base_stat_total": 300,
+      "primary_type": "water",
+      "final_tier": 1,
+      "tier_label": "Common"
+    },
+    {
+      "pokemon_id": 224,
+      "name": "octillery",
+      "habitat": "sea",
+      "capture_rate": 75,
+      "base_stat_total": 480,
+      "primary_type": "water",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 225,
+      "name": "delibird",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 330,
+      "primary_type": "ice",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 226,
+      "name": "mantine",
+      "habitat": "sea",
+      "capture_rate": 25,
+      "base_stat_total": 485,
+      "primary_type": "water",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 227,
+      "name": "skarmory",
+      "habitat": "rough-terrain",
+      "capture_rate": 25,
+      "base_stat_total": 465,
+      "primary_type": "steel",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 228,
+      "name": "houndour",
+      "habitat": "rough-terrain",
+      "capture_rate": 120,
+      "base_stat_total": 330,
+      "primary_type": "dark",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 229,
+      "name": "houndoom",
+      "habitat": "rough-terrain",
+      "capture_rate": 45,
+      "base_stat_total": 500,
+      "primary_type": "dark",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 230,
+      "name": "kingdra",
+      "habitat": "sea",
+      "capture_rate": 45,
+      "base_stat_total": 540,
+      "primary_type": "water",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 231,
+      "name": "phanpy",
+      "habitat": "rough-terrain",
+      "capture_rate": 120,
+      "base_stat_total": 330,
+      "primary_type": "ground",
+      "final_tier": 2,
+      "tier_label": "Uncommon"
+    },
+    {
+      "pokemon_id": 232,
+      "name": "donphan",
+      "habitat": "rough-terrain",
+      "capture_rate": 60,
+      "base_stat_total": 500,
+      "primary_type": "ground",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 233,
+      "name": "porygon2",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 515,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 234,
+      "name": "stantler",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 465,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 235,
+      "name": "smeargle",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 250,
+      "primary_type": "normal",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 236,
+      "name": "tyrogue",
+      "habitat": "urban",
+      "capture_rate": 75,
+      "base_stat_total": 210,
+      "primary_type": "fighting",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 237,
+      "name": "hitmontop",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 455,
+      "primary_type": "fighting",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 238,
+      "name": "smoochum",
+      "habitat": "urban",
+      "capture_rate": 45,
+      "base_stat_total": 305,
+      "primary_type": "ice",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 239,
+      "name": "elekid",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 360,
+      "primary_type": "electric",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 240,
+      "name": "magby",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 365,
+      "primary_type": "fire",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 241,
+      "name": "miltank",
+      "habitat": "grassland",
+      "capture_rate": 45,
+      "base_stat_total": 490,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 242,
+      "name": "blissey",
+      "habitat": "urban",
+      "capture_rate": 30,
+      "base_stat_total": 540,
+      "primary_type": "normal",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 243,
+      "name": "raikou",
+      "habitat": "grassland",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "electric",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 244,
+      "name": "entei",
+      "habitat": "grassland",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "fire",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 245,
+      "name": "suicune",
+      "habitat": "grassland",
+      "capture_rate": 3,
+      "base_stat_total": 580,
+      "primary_type": "water",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 246,
+      "name": "larvitar",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 300,
+      "primary_type": "rock",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 247,
+      "name": "pupitar",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 410,
+      "primary_type": "rock",
+      "final_tier": 3,
+      "tier_label": "Rare"
+    },
+    {
+      "pokemon_id": 248,
+      "name": "tyranitar",
+      "habitat": "mountain",
+      "capture_rate": 45,
+      "base_stat_total": 600,
+      "primary_type": "rock",
+      "final_tier": 4,
+      "tier_label": "Very Rare"
+    },
+    {
+      "pokemon_id": 249,
+      "name": "lugia",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 680,
+      "primary_type": "psychic",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 250,
+      "name": "ho-oh",
+      "habitat": "rare",
+      "capture_rate": 3,
+      "base_stat_total": 680,
+      "primary_type": "fire",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    },
+    {
+      "pokemon_id": 251,
+      "name": "celebi",
+      "habitat": "forest",
+      "capture_rate": 45,
+      "base_stat_total": 600,
+      "primary_type": "psychic",
+      "final_tier": 5,
+      "tier_label": "Legendary"
+    }
+  ]
+}
