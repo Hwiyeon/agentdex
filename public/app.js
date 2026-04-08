@@ -2996,6 +2996,26 @@
   var mapTooltipEl = document.createElement('div');
   mapTooltipEl.className = 'map-tooltip';
   document.body.appendChild(mapTooltipEl);
+  var mapTooltipHideTimer = null;
+  var mapTooltipHideDelay = 70;
+  var mapTooltipBridgeDelay = 95;
+  var mapTooltipGap = 2;
+
+  function cancelPendingMapTooltipHide() {
+    if (mapTooltipHideTimer !== null) {
+      clearTimeout(mapTooltipHideTimer);
+      mapTooltipHideTimer = null;
+    }
+  }
+
+  function scheduleMapTooltipHide(delayMs) {
+    cancelPendingMapTooltipHide();
+    mapTooltipHideTimer = setTimeout(function () {
+      mapTooltipHideTimer = null;
+      hideMapTooltip();
+    }, typeof delayMs === 'number' ? delayMs : mapTooltipHideDelay);
+  }
+
   mapTooltipEl.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-action="box"]');
     if (btn) {
@@ -3003,6 +3023,14 @@
       fetch('/api/box/' + encodeURIComponent(agentId), { method: 'POST' });
       hideMapTooltip();
     }
+  });
+  mapTooltipEl.addEventListener('mouseenter', function () {
+    cancelPendingMapTooltipHide();
+  });
+  mapTooltipEl.addEventListener('mouseleave', function (e) {
+    var related = e.relatedTarget;
+    if (related && related.closest && related.closest('.agent-sprite[data-agent-id]')) return;
+    scheduleMapTooltipHide();
   });
 
   function showMapTooltip(agent, anchorRect) {
@@ -3066,13 +3094,14 @@
     var left = anchorRect.left + anchorRect.width / 2 - tw / 2;
     left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
     var th = mapTooltipEl.offsetHeight;
-    var top = anchorRect.top - th - 6;
-    if (top < 4) top = anchorRect.bottom + 6;
+    var top = anchorRect.top - th - mapTooltipGap;
+    if (top < 4) top = anchorRect.bottom + mapTooltipGap;
     mapTooltipEl.style.left = left + 'px';
     mapTooltipEl.style.top = top + 'px';
   }
 
   function hideMapTooltip() {
+    cancelPendingMapTooltipHide();
     mapTooltipEl.style.display = 'none';
   }
 
@@ -3147,14 +3176,198 @@
     left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
     // Measure tooltip height after content is set
     var th = boxTooltipEl.offsetHeight;
-    var top = anchorRect.top - th - 6;
-    if (top < 4) top = anchorRect.bottom + 6; // flip below if no room above
+    var top = anchorRect.top - th - mapTooltipGap;
+    if (top < 4) top = anchorRect.bottom + mapTooltipGap; // flip below if no room above
     boxTooltipEl.style.left = left + 'px';
     boxTooltipEl.style.top = top + 'px';
   }
 
   function hideBoxTooltip() {
     boxTooltipEl.style.display = 'none';
+  }
+
+  function formatSummaryDate(ts) {
+    if (!ts) return 'No record';
+    var d = new Date(ts);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ', ' + d.getFullYear();
+  }
+
+  function formatSummaryDateTime(ts) {
+    if (!ts) return 'No record';
+    var d = new Date(ts);
+    var y = d.getFullYear();
+    var mo = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    var h = String(d.getHours()).padStart(2, '0');
+    var m = String(d.getMinutes()).padStart(2, '0');
+    var s = String(d.getSeconds()).padStart(2, '0');
+    return y + '/' + mo + '/' + day + ', ' + h + ':' + m + ':' + s;
+  }
+
+  function tooltipAgentName(agent) {
+    return agentPanelName(agent);
+  }
+
+  function tooltipRoleLabel(agent) {
+    if (!agent) return 'Agent';
+    if (agent.parentId) return agent.subagentType || 'Sub-agent';
+    if (agent.subagentType) return agent.subagentType;
+    return 'Root Agent';
+  }
+
+  function tooltipStatusClass(status) {
+    return String(status || 'idle').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
+  function tooltipAreaLabel(agent) {
+    if (!agent) return 'Unknown Area';
+    var areaIndex = getAreaIndex(agent);
+    return AREAS[areaIndex] ? AREAS[areaIndex].label : 'Unknown Area';
+  }
+
+  function buildAgentSummaryTooltip(agent, options) {
+    options = options || {};
+
+    var archived = !!options.archived;
+    var allowBoxAction = !!options.allowBoxAction;
+    var isSleep = agent.isSleeping || !agent.isActive;
+    var spriteUrl = archived ? pokemonStaticIconUrl(agent) : pokemonSpriteUrl(agent, isSleep);
+    var speciesName = pokemonDisplayName(getRenderPokemonId(agent));
+    var xp = agentLevelProgress(agent);
+    var agentName = tooltipAgentName(agent);
+    var fullLabel = agentLabel(agent);
+    var statusText = archived ? 'Boxed' : (agent.status || 'Idle');
+    var projName = shortProjectName(agent.projectId || 'unknown');
+    var modelLabel = formatModelName(agent.model, agent.contextMax || 1000000) || 'Opus 4.6 (1M context)';
+    var metAtText = formatSummaryDateTime(agent.createdAt);
+    var lastCommand = commandText(agent.lastCommand);
+    var noteText = summarizeCommand(lastCommand || agent.lastUserQuery || '-', 116);
+    var noteLabel = 'Last Activity';
+    var contextMax = agent.contextMax || 200000;
+    var contextUsed = agent.contextUsed || 0;
+    var contextRemaining = Math.max(0, contextMax - contextUsed);
+    var hpRatio = contextMax > 0 ? (contextRemaining / contextMax) : 0;
+    var barColor = hpBarColor(hpRatio);
+    var barPct = Math.max(0, Math.min(100, hpRatio * 100));
+    var memoLines = [];
+    var lastSeenText = '-';
+    var lastSeenLabel = 'Last seen';
+    var rows = [
+      { label: 'Name', value: agentName, wrap: true },
+      { label: 'HP', kind: 'meter', meterTone: 'hp', value: formatContextK(contextRemaining) + '/' + formatContextK(contextMax), pct: barPct, color: barColor },
+      { label: 'EXP', kind: 'meter', meterTone: 'exp', value: formatTokenCount(xp.intoLevel) + '/' + formatTokenCount(xp.needed), subvalue: 'Total token', subvalueDetail: formatTokenCount(xp.totalTokens), pct: xp.progress },
+      { label: 'Type', value: modelLabel, pill: true, tone: 'type' }
+    ];
+
+    if (archived && agent.doneAt) {
+      lastSeenText = formatTime(agent.doneAt);
+      lastSeenLabel = 'Ended';
+    } else if (agent.lastSeen) {
+      lastSeenText = Math.max(0, Math.floor((Date.now() - agent.lastSeen) / 1000)) + 's ago';
+    }
+
+    memoLines.push({ html: 'Met in <span class="summary-tooltip-project-accent">' + escapeHtml(projName) + '</span> at ' + escapeHtml(metAtText) + '.', accent: false });
+
+    var html = '';
+    html += '<div class="summary-tooltip-shell' + (archived ? ' archived' : ' live') + '">';
+    html += '<div class="summary-tooltip-topbar">';
+    html += '<span class="summary-tooltip-window-title">' + (archived ? 'Archive Info' : 'Agent Info') + '</span>';
+    html += '<span class="summary-tooltip-page">' + (archived ? 'BOX PAGE' : 'LIVE PAGE') + '</span>';
+    html += '</div>';
+    html += '<div class="summary-tooltip-main">';
+    html += '<div class="summary-tooltip-left">';
+    html += '<div class="summary-tooltip-namebar">';
+    html += '<span class="summary-tooltip-level">Lv' + xp.level + '</span>';
+    html += '<span class="summary-tooltip-agent-name" title="' + escapeHtml(speciesName) + '">' + escapeHtml(speciesName) + '</span>';
+    html += '</div>';
+    html += '<div class="summary-tooltip-portrait">';
+    html += '<span class="summary-tooltip-status summary-status-' + tooltipStatusClass(statusText) + '">' + escapeHtml(statusText) + '</span>';
+    html += '<img class="summary-tooltip-sprite" src="' + escapeHtml(spriteUrl) + '" />';
+    html += '<span class="summary-tooltip-ball" aria-hidden="true"></span>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="summary-tooltip-right">';
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      html += '<div class="summary-tooltip-info-row' + (row.kind === 'meter' ? ' meter meter-' + row.meterTone : '') + '">';
+      html += '<span class="summary-tooltip-info-label">' + escapeHtml(row.label) + '</span>';
+      if (row.kind === 'meter') {
+        html += '<div class="summary-tooltip-meter">';
+        html += '<div class="summary-tooltip-meter-track"><div class="summary-tooltip-meter-fill tone-' + row.meterTone + '" style="width:' + row.pct.toFixed(1) + '%;' + (row.color ? 'background:' + row.color + ';' : '') + '"></div></div>';
+        html += '<div class="summary-tooltip-meter-meta">';
+        html += '<span class="summary-tooltip-meter-subvalue' + (row.subvalue ? '' : ' is-empty') + '">';
+        if (row.subvalue) {
+          html += escapeHtml(row.subvalue);
+          if (row.subvalueDetail) html += ' <b>' + escapeHtml(row.subvalueDetail) + '</b>';
+        }
+        html += '</span>';
+        html += '<span class="summary-tooltip-meter-value">' + escapeHtml(row.value) + '</span>';
+        html += '</div>';
+        html += '</div>';
+      } else {
+        html += '<span class="summary-tooltip-info-value' + (row.pill ? ' pill tone-' + row.tone : '') + (row.wrap ? ' wrap' : '') + '">' + escapeHtml(row.value) + '</span>';
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="summary-tooltip-memo">';
+    html += '<div class="summary-tooltip-memo-head">';
+    html += '<span class="summary-tooltip-memo-title">Trainer Memo</span>';
+    html += '</div>';
+    html += '<div class="summary-tooltip-memo-body">';
+    for (var j = 0; j < memoLines.length; j++) {
+      html += '<div class="summary-tooltip-memo-line' + (memoLines[j].accent ? ' accent' : '') + '">';
+      html += memoLines[j].html || escapeHtml(memoLines[j].text);
+      html += '</div>';
+    }
+    html += '</div>';
+    if (noteText) {
+      html += '<div class="summary-tooltip-note">';
+      html += '<div class="summary-tooltip-note-head">';
+      html += '<span class="summary-tooltip-note-label">' + escapeHtml(noteLabel) + '</span>';
+      html += '<span class="summary-tooltip-note-meta">' + escapeHtml(lastSeenLabel + ' ' + lastSeenText) + '</span>';
+      html += '</div>';
+      html += '<span class="summary-tooltip-note-value">' + escapeHtml(noteText) + '</span>';
+      html += '</div>';
+    }
+    if (allowBoxAction) {
+      html += '<button class="summary-tooltip-box-btn map-tooltip-box-btn" data-action="box" data-agent-id="' + escapeHtml(agent.agentId) + '">Box</button>';
+    }
+    html += '</div>';
+    html += '</div>';
+
+    return html;
+  }
+
+  function showMapTooltipSummary(agent, anchorRect) {
+    cancelPendingMapTooltipHide();
+    mapTooltipEl.innerHTML = buildAgentSummaryTooltip(agent, { allowBoxAction: true });
+    mapTooltipEl.style.display = 'block';
+
+    var tw = mapTooltipEl.offsetWidth;
+    var left = anchorRect.left + anchorRect.width / 2 - tw / 2;
+    left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
+    var th = mapTooltipEl.offsetHeight;
+    var top = anchorRect.top - th - mapTooltipGap;
+    if (top < 4) top = anchorRect.bottom + mapTooltipGap;
+    mapTooltipEl.style.left = left + 'px';
+    mapTooltipEl.style.top = top + 'px';
+  }
+
+  function showBoxTooltipSummary(agent, anchorRect) {
+    boxTooltipEl.innerHTML = buildAgentSummaryTooltip(agent, { archived: true });
+    boxTooltipEl.style.display = 'block';
+
+    var tw = boxTooltipEl.offsetWidth;
+    var left = anchorRect.left + anchorRect.width / 2 - tw / 2;
+    left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
+    var th = boxTooltipEl.offsetHeight;
+    var top = anchorRect.top - th - mapTooltipGap;
+    if (top < 4) top = anchorRect.bottom + mapTooltipGap;
+    boxTooltipEl.style.left = left + 'px';
+    boxTooltipEl.style.top = top + 'px';
   }
 
   function showPokedexTooltip(pokemonId, anchorRect) {
@@ -3930,17 +4143,18 @@
     // Map sprite hover → tooltip
     function updateMapTooltipForSprite(sprite) {
       if (!sprite) {
-        hideMapTooltip();
+        scheduleMapTooltipHide();
         return;
       }
+      cancelPendingMapTooltipHide();
       var agentId = sprite.getAttribute('data-agent-id');
       var agents = (appState.snapshot && appState.snapshot.agents) || [];
       var agent = null;
       for (var i = 0; i < agents.length; i++) {
         if (agents[i].agentId === agentId) { agent = agents[i]; break; }
       }
-      if (agent) showMapTooltip(agent, sprite.getBoundingClientRect());
-      else hideMapTooltip();
+      if (agent) showMapTooltipSummary(agent, sprite.getBoundingClientRect());
+      else scheduleMapTooltipHide();
     }
 
     overlayEl.addEventListener('mouseover', function (e) {
@@ -3951,24 +4165,33 @@
     });
     overlayEl.addEventListener('mouseout', function (e) {
       var related = e.relatedTarget;
-      if (!related || !related.closest || !related.closest('.agent-sprite[data-agent-id]')) {
-        hideMapTooltip();
+      if (!related || !related.closest || (!related.closest('.agent-sprite[data-agent-id]') && !related.closest('.map-tooltip'))) {
+        scheduleMapTooltipHide();
       }
     });
     // overlayEl has pointer-events:none so mouseleave on it never fires.
     // Instead listen on the parent canvas-area and the canvas itself.
     var canvasAreaEl = overlayEl.parentElement;
-    canvasAreaEl.addEventListener('mouseleave', function () {
-      hideMapTooltip();
+    canvasAreaEl.addEventListener('mouseleave', function (e) {
+      var related = e.relatedTarget;
+      if (related && related.closest && related.closest('.map-tooltip')) return;
+      scheduleMapTooltipHide();
     });
-    // When mouse is on the canvas background (not a sprite), hide any stuck tooltip.
-    var officeCanvasEl = document.getElementById('office-canvas');
-    if (officeCanvasEl) {
-      officeCanvasEl.addEventListener('mousemove', function () {
-        hideMapTooltip();
-      });
-    }
-
+    document.addEventListener('mousemove', function (e) {
+      if (mapTooltipEl.style.display !== 'block') return;
+      var target = e.target;
+      if (target && target.closest) {
+        if (target.closest('.map-tooltip')) {
+          cancelPendingMapTooltipHide();
+          return;
+        }
+        if (target.closest('.agent-sprite[data-agent-id]')) {
+          cancelPendingMapTooltipHide();
+          return;
+        }
+      }
+      scheduleMapTooltipHide(mapTooltipBridgeDelay);
+    });
     if (promoStudioToggleEl) {
       promoStudioToggleEl.addEventListener('click', function () {
         if (!promoStudioAvailable()) return;
@@ -4168,7 +4391,7 @@
       var idx = parseInt(item.getAttribute('data-box-index'), 10);
       var boxed = appState.snapshot.boxedAgents || [];
       if (idx >= 0 && idx < boxed.length) {
-        showBoxTooltip(boxed[idx], item.getBoundingClientRect());
+        showBoxTooltipSummary(boxed[idx], item.getBoundingClientRect());
       } else {
         hideBoxTooltip();
       }
