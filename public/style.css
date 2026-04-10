@@ -3207,6 +3207,11 @@ body {
   margin-bottom: 1px;
 }
 
+.summary-tooltip-note-head.is-secondary {
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+
 .summary-tooltip-note-label {
   display: inline-flex;
   align-items: center;
@@ -3222,10 +3227,21 @@ body {
   text-transform: uppercase;
 }
 
+.summary-tooltip-note-label.is-secondary {
+  padding: 2px 7px;
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  background: linear-gradient(180deg, #7b6e91 0%, #5a506d 100%);
+}
+
 .summary-tooltip-note-label::before {
   content: '>';
   font-size: 11px;
   line-height: 1;
+}
+
+.summary-tooltip-note-label.is-secondary::before {
+  font-size: 9px;
 }
 
 .summary-tooltip-note-meta {
@@ -3243,6 +3259,21 @@ body {
   line-height: 1.36;
   color: #5f5048;
   word-break: break-word;
+}
+
+.summary-tooltip-note-value.is-command {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  color: #4a3c35;
+}
+
+.summary-tooltip-note-value.is-secondary {
+  display: block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18px;
+  text-transform: uppercase;
+  color: #5c4d40;
 }
 
 .summary-tooltip-box-btn.map-tooltip-box-btn {

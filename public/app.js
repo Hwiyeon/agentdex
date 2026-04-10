@@ -2214,6 +2214,11 @@
     return '/sprites/icon/' + id + '.png';
   }
 
+  function pokemonAnimatedSpriteUrl(agent) {
+    var id = getRenderPokemonId(agent);
+    return '/sprites/animated/' + id + '.gif';
+  }
+
   function pokemonStaticIconUrl(agent) {
     var id = getRenderPokemonId(agent);
     return '/sprites/icon-static/' + id + '.png';
@@ -3232,7 +3237,7 @@
     var archived = !!options.archived;
     var allowBoxAction = !!options.allowBoxAction;
     var isSleep = agent.isSleeping || !agent.isActive;
-    var spriteUrl = archived ? pokemonStaticIconUrl(agent) : pokemonSpriteUrl(agent, isSleep);
+    var spriteUrl = pokemonAnimatedSpriteUrl(agent);
     var speciesName = pokemonDisplayName(getRenderPokemonId(agent));
     var xp = agentLevelProgress(agent);
     var agentName = tooltipAgentName(agent);
@@ -3241,9 +3246,10 @@
     var projName = shortProjectName(agent.projectId || 'unknown');
     var modelLabel = formatModelName(agent.model, agent.contextMax || 1000000) || 'Opus 4.6 (1M context)';
     var metAtText = formatSummaryDateTime(agent.createdAt);
+    var lastActivity = commandText(agent.activity || statusText || 'Idle');
     var lastCommand = commandText(agent.lastCommand);
-    var noteText = summarizeCommand(lastCommand || agent.lastUserQuery || '-', 116);
-    var noteLabel = 'Last Activity';
+    var noteText = summarizeCommand(lastCommand || 'No command yet', 116);
+    var activityText = summarizeCommand(lastActivity, 96);
     var contextMax = agent.contextMax || 200000;
     var contextUsed = agent.contextUsed || 0;
     var contextRemaining = Math.max(0, contextMax - contextUsed);
@@ -3323,13 +3329,21 @@
       html += '</div>';
     }
     html += '</div>';
-    if (noteText) {
+    if (noteText || lastActivity) {
       html += '<div class="summary-tooltip-note">';
       html += '<div class="summary-tooltip-note-head">';
-      html += '<span class="summary-tooltip-note-label">' + escapeHtml(noteLabel) + '</span>';
+      html += '<span class="summary-tooltip-note-label">Last Command</span>';
       html += '<span class="summary-tooltip-note-meta">' + escapeHtml(lastSeenLabel + ' ' + lastSeenText) + '</span>';
       html += '</div>';
-      html += '<span class="summary-tooltip-note-value">' + escapeHtml(noteText) + '</span>';
+      if (noteText) {
+        html += '<span class="summary-tooltip-note-value is-command">' + escapeHtml(noteText) + '</span>';
+      }
+      if (lastActivity) {
+        html += '<div class="summary-tooltip-note-head is-secondary">';
+        html += '<span class="summary-tooltip-note-label is-secondary">Last Activity</span>';
+        html += '</div>';
+        html += '<span class="summary-tooltip-note-value is-secondary">' + escapeHtml(activityText) + '</span>';
+      }
       html += '</div>';
     }
     if (allowBoxAction) {
@@ -3491,7 +3505,7 @@
       var lastCommand = commandText(agent.lastCommand);
 
       var manualClass = agent.manuallyBoxed ? ' manually-boxed' : '';
-      html += '<div class="box-item' + (compact ? ' compact' : ' detailed') + manualClass + '" data-box-index="' + i + '">';
+      html += '<div class="box-item' + (compact ? ' compact' : ' detailed') + manualClass + '" data-box-index="' + i + '" data-agent-id="' + escapeHtml(agent.agentId) + '">';
       html += '<img class="box-sprite" src="' + escapeHtml(spriteUrl) + '" />';
       if (!compact) {
         var subhistoryCount = subhistoryFamilyCount(agent.agentId);
@@ -4388,10 +4402,10 @@
         hideBoxTooltip();
         return;
       }
-      var idx = parseInt(item.getAttribute('data-box-index'), 10);
-      var boxed = appState.snapshot.boxedAgents || [];
-      if (idx >= 0 && idx < boxed.length) {
-        showBoxTooltipSummary(boxed[idx], item.getBoundingClientRect());
+      var agentId = item.getAttribute('data-agent-id');
+      var boxedAgent = agentId ? boxedAgentById(agentId) : null;
+      if (boxedAgent) {
+        showBoxTooltipSummary(boxedAgent, item.getBoundingClientRect());
       } else {
         hideBoxTooltip();
       }
