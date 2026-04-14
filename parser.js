@@ -1,7 +1,9 @@
 'use strict';
 
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const EVENT_TYPES = Object.freeze({
   AGENT_SEEN: 'AGENT_SEEN',
@@ -342,6 +344,29 @@ function modelContextMax(model) {
   return 200000;
 }
 
+// Read context_window_size from statusline-exported metadata (authoritative source).
+// Files written by ~/.claude/statusline-command.sh at ~/.claude/context_meta/{sessionId}.json
+const _contextMetaCache = new Map();   // sessionId -> { value, readAt }
+const CONTEXT_META_TTL_MS = 10_000;
+
+function readSessionContextMax(sessionId) {
+  if (!sessionId) return null;
+  const now = Date.now();
+  const cached = _contextMetaCache.get(sessionId);
+  if (cached && now - cached.readAt < CONTEXT_META_TTL_MS) return cached.value;
+  try {
+    const metaPath = path.join(os.homedir(), '.claude', 'context_meta', `${sessionId}.json`);
+    const data = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    const size = Number(data.context_window_size);
+    if (size > 0) {
+      _contextMetaCache.set(sessionId, { value: size, readAt: now });
+      return size;
+    }
+  } catch (_) { /* file not yet written — fall through */ }
+  _contextMetaCache.set(sessionId, { value: null, readAt: now });
+  return null;
+}
+
 function normalizeEntry(entry, context) {
   const ts = toMs(
     pick(entry, ['ts', 'timestamp', 'time', 'created_at', 'createdAt', 'meta.ts', 'metadata.timestamp'])
@@ -504,12 +529,13 @@ function normalizeEntry(entry, context) {
       }
     }
 
-    // Derive context max from model name
+    // Derive context max: prefer statusline-exported value, fall back to model heuristic
     const model = pick(entry, ['message.model', 'model']);
     if (model && typeof model === 'string') {
-      outputMeta.contextMax = modelContextMax(model);
       outputMeta.model = model;
     }
+    const sessionContextMax = readSessionContextMax(baseMeta.sessionId);
+    outputMeta.contextMax = sessionContextMax || modelContextMax(model || '');
 
     events.push({
       type: EVENT_TYPES.ASSISTANT_OUTPUT,

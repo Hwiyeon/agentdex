@@ -149,6 +149,57 @@ body {
   font-weight: 700;
 }
 
+.rate-limits-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 2px solid var(--line);
+  background: #1a1a2e;
+  padding: 6px 10px;
+  min-width: 140px;
+}
+
+.rate-limit-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rate-limit-label {
+  width: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #ffe060;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.rate-limit-track {
+  flex: 1;
+  min-width: 60px;
+  height: 7px;
+  background: #303030;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid #181818;
+}
+
+.rate-limit-fill {
+  height: 100%;
+  border-radius: 1px;
+  transition: width 0.4s ease, background 0.4s ease;
+  background: #58d058;
+}
+
+.rate-limit-pct {
+  font-size: 10px;
+  font-weight: 700;
+  color: #c8c8c8;
+  min-width: 28px;
+  text-align: right;
+}
+
 .stat {
   border: 2px solid var(--line);
   background: #f4f8f9;

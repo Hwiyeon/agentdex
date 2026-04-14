@@ -288,6 +288,11 @@
   const pokedexGridEl = document.getElementById('pokedex-grid');
   const pokedexLangEnEl = document.getElementById('pokedex-lang-en');
   const pokedexLangKoEl = document.getElementById('pokedex-lang-ko');
+  const rateLimitsWrapEl = document.getElementById('rate-limits-wrap');
+  const rate5hFillEl = document.getElementById('rate-5h-fill');
+  const rate5hPctEl = document.getElementById('rate-5h-pct');
+  const rate7dFillEl = document.getElementById('rate-7d-fill');
+  const rate7dPctEl = document.getElementById('rate-7d-pct');
 
   const uiState = {
     projectFilter: 'all',
@@ -2266,6 +2271,48 @@
     return '#e85040';
   }
 
+  function formatResetTime(epoch) {
+    if (!epoch) return '';
+    var d = new Date(epoch * 1000);
+    var now = new Date();
+    var diffMs = d - now;
+    if (diffMs <= 0) return 'reset imminent';
+    var h = Math.floor(diffMs / 3600000);
+    var m = Math.floor((diffMs % 3600000) / 60000);
+    if (h > 0) return 'resets in ' + h + 'h ' + m + 'm';
+    return 'resets in ' + m + 'm';
+  }
+
+  function updateRateLimits(rateLimits) {
+    if (!rateLimits) {
+      rateLimitsWrapEl.hidden = true;
+      return;
+    }
+    rateLimitsWrapEl.hidden = false;
+    var fh = rateLimits.five_hour;
+    var sd = rateLimits.seven_day;
+    if (fh && typeof fh.used_percentage === 'number') {
+      var used5 = Math.min(100, Math.max(0, fh.used_percentage));
+      var remain5 = 100 - used5;
+      var color5 = hpBarColor(remain5 / 100);
+      rate5hFillEl.style.width = remain5 + '%';
+      rate5hFillEl.style.background = color5;
+      rate5hPctEl.textContent = remain5 + '%';
+      rate5hPctEl.style.color = color5;
+      rate5hFillEl.parentElement.parentElement.title = '5-hour window: ' + remain5 + '% remaining\n' + formatResetTime(fh.resets_at);
+    }
+    if (sd && typeof sd.used_percentage === 'number') {
+      var used7 = Math.min(100, Math.max(0, sd.used_percentage));
+      var remain7 = 100 - used7;
+      var color7 = hpBarColor(remain7 / 100);
+      rate7dFillEl.style.width = remain7 + '%';
+      rate7dFillEl.style.background = color7;
+      rate7dPctEl.textContent = remain7 + '%';
+      rate7dPctEl.style.color = color7;
+      rate7dFillEl.parentElement.parentElement.title = '7-day window: ' + remain7 + '% remaining\n' + formatResetTime(sd.resets_at);
+    }
+  }
+
   function formatModelName(model, contextMax) {
     if (!model) return null;
     var m = String(model).toLowerCase();
@@ -2640,6 +2687,7 @@
     activeCountEl.textContent = String(snapshot.activeAgentCount || 0);
     lastUpdateEl.textContent = new Date(snapshot.lastUpdate || Date.now()).toLocaleTimeString();
     tokenTotalEl.textContent = formatTokenCount(filteredTokenTotal(agents));
+    updateRateLimits(snapshot.rateLimits);
   }
 
   function syncVisibleSnapshot() {

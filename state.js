@@ -340,14 +340,10 @@ class AgentState extends EventEmitter {
     }
     if (typeof meta.contextUsed === 'number') {
       agent.contextUsed = meta.contextUsed;
-      // Dynamically detect extended context: if usage exceeds the current max,
-      // upgrade to the next known tier (1M).
-      if (agent.contextUsed > agent.contextMax) {
-        agent.contextMax = 1000000;
-      }
     }
     if (typeof meta.contextMax === 'number') {
-      agent.contextMax = Math.max(agent.contextMax, meta.contextMax);
+      // Always adopt the parser-reported value (sourced from Claude Code statusline)
+      agent.contextMax = meta.contextMax;
     }
     if (meta.model && typeof meta.model === 'string' && !agent.model) {
       agent.model = meta.model;

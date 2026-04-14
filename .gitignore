@@ -1,4 +1,5 @@
 .codex
+.claude
 data/state.json
 data/pokedex.json
 data/runtime/

@@ -3,6 +3,7 @@
 const fs = require('fs');
 const fsp = fs.promises;
 const path = require('path');
+const os = require('os');
 const http = require('http');
 const url = require('url');
 const EventEmitter = require('events');
@@ -91,9 +92,19 @@ class DashboardServer extends EventEmitter {
     this.server = null;
   }
 
+  readRateLimits() {
+    try {
+      const metaPath = path.join(os.homedir(), '.claude', 'context_meta', '_rate_limits.json');
+      return JSON.parse(fs.readFileSync(metaPath, 'utf8')).rate_limits || null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   snapshotPayload() {
     return {
       ...this.state.snapshot(),
+      rateLimits: this.readRateLimits(),
       config: {
         mode: this.publicConfig.mode || (this.publicConfig.isMockMode ? 'mock' : 'watch'),
         enablePokeapiSprites: !!this.publicConfig.enablePokeapiSprites,

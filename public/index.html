@@ -23,6 +23,18 @@
             <span class="promo-studio-toggle-subtitle">Custom scene builder</span>
           </button>
           <button id="hard-reset-btn" class="hard-reset-btn" type="button" hidden>Hard Reset</button>
+          <div id="rate-limits-wrap" class="rate-limits-wrap" hidden>
+            <div class="rate-limit-bar">
+              <span class="rate-limit-label">5H</span>
+              <div class="rate-limit-track"><div id="rate-5h-fill" class="rate-limit-fill"></div></div>
+              <span id="rate-5h-pct" class="rate-limit-pct">-</span>
+            </div>
+            <div class="rate-limit-bar">
+              <span class="rate-limit-label">7D</span>
+              <div class="rate-limit-track"><div id="rate-7d-fill" class="rate-limit-fill"></div></div>
+              <span id="rate-7d-pct" class="rate-limit-pct">-</span>
+            </div>
+          </div>
           <div class="stat">
             <span class="label">Active</span>
             <span id="active-count" class="value">0</span>
