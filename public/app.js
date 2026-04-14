@@ -2295,21 +2295,21 @@
       var used5 = Math.min(100, Math.max(0, fh.used_percentage));
       var remain5 = 100 - used5;
       var color5 = hpBarColor(remain5 / 100);
-      rate5hFillEl.style.width = remain5 + '%';
+      rate5hFillEl.style.width = remain5.toFixed(1) + '%';
       rate5hFillEl.style.background = color5;
-      rate5hPctEl.textContent = remain5 + '%';
+      rate5hPctEl.textContent = remain5.toFixed(1) + '%';
       rate5hPctEl.style.color = color5;
-      rate5hFillEl.parentElement.parentElement.title = '5-hour window: ' + remain5 + '% remaining\n' + formatResetTime(fh.resets_at);
+      rate5hFillEl.parentElement.parentElement.title = '5-hour window: ' + remain5.toFixed(1) + '% remaining\n' + formatResetTime(fh.resets_at);
     }
     if (sd && typeof sd.used_percentage === 'number') {
       var used7 = Math.min(100, Math.max(0, sd.used_percentage));
       var remain7 = 100 - used7;
       var color7 = hpBarColor(remain7 / 100);
-      rate7dFillEl.style.width = remain7 + '%';
+      rate7dFillEl.style.width = remain7.toFixed(1) + '%';
       rate7dFillEl.style.background = color7;
-      rate7dPctEl.textContent = remain7 + '%';
+      rate7dPctEl.textContent = remain7.toFixed(1) + '%';
       rate7dPctEl.style.color = color7;
-      rate7dFillEl.parentElement.parentElement.title = '7-day window: ' + remain7 + '% remaining\n' + formatResetTime(sd.resets_at);
+      rate7dFillEl.parentElement.parentElement.title = '7-day window: ' + remain7.toFixed(1) + '% remaining\n' + formatResetTime(sd.resets_at);
     }
   }
 
