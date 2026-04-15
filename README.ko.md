@@ -47,9 +47,15 @@
 
 ### Agents Panel
 
-![Agents panel](imgs/pokemon_tab.jpg)
+<table>
+  <tr>
+    <td width="50%"><img src="imgs/pokemon_tab.jpg" alt="Agents panel" /></td>
+    <td width="50%"><img src="imgs/status.jpg" alt="Agent status card" /></td>
+  </tr>
+</table>
 
 - 스폰된 모든 포켓몬은 왼쪽 패널에도 표시되어 현재 active roster를 바로 확인할 수 있습니다.
+- status 카드는 하나의 agent를 최근 명령, 마지막 활동, 모델, HP/EXP 진행도로 압축해서 보여줍니다.
 - `LV` 와 `EXP` 는 토큰 사용량에 따라 올라갑니다.
 - `HP` 는 context window를 소모할수록 줄어듭니다 — 세션을 마무리하고 새로 시작할 타이밍을 가늠하는 데 유용합니다.
 - subagent가 소환되면 패널에 부모 기준 hierarchy가 생깁니다.

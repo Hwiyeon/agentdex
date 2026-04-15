@@ -864,6 +864,58 @@
     return discoveryMap[pokemonId] || null;
   }
 
+  function pokedexEncounterCount(pokemonId) {
+    var snapshot = appState.snapshot || {};
+    var countedAgents = {};
+    var count = 0;
+    var discovery = pokedexDiscoveryInfo(pokemonId);
+
+    function addAgent(agent) {
+      if (!agent || !agent.agentId || countedAgents[agent.agentId]) return;
+      countedAgents[agent.agentId] = true;
+      if (Number(getRenderPokemonId(agent)) === pokemonId) {
+        count += 1;
+      }
+    }
+
+    var liveAgents = Array.isArray(snapshot.agents) ? snapshot.agents : [];
+    var boxedAgents = Array.isArray(snapshot.boxedAgents) ? snapshot.boxedAgents : [];
+    var subhistoryAgents = Array.isArray(snapshot.subagentHistory) ? snapshot.subagentHistory : [];
+
+    for (var i = 0; i < liveAgents.length; i++) addAgent(liveAgents[i]);
+    for (var j = 0; j < boxedAgents.length; j++) addAgent(boxedAgents[j]);
+    for (var k = 0; k < subhistoryAgents.length; k++) addAgent(subhistoryAgents[k]);
+
+    if (discovery && discovery.agentId && !countedAgents[discovery.agentId]) {
+      count += 1;
+    }
+
+    return count;
+  }
+
+  function pokedexTooltipLabels() {
+    if (uiState.pokedexLanguage === 'ko') {
+      return {
+        metCount: '만난 횟수',
+        firstMeet: '첫 만남',
+        firstMeetHint: '처음 기록된 순간',
+        project: '프로젝트',
+        date: '날짜',
+        time: '시간',
+        undiscovered: '아직 만난 기록이 없어요.'
+      };
+    }
+    return {
+      metCount: 'Met',
+      firstMeet: 'First encounter',
+      firstMeetHint: 'First recorded moment',
+      project: 'Project',
+      date: 'Date',
+      time: 'Time',
+      undiscovered: 'No encounter recorded yet.'
+    };
+  }
+
   function getPokemonRarity(pokemonId) {
     var label = pokemonRarityLabels[pokemonId];
     var tier = pokemonRarityTiers[pokemonId];
@@ -871,6 +923,129 @@
     return {
       label: label || 'Unknown',
       tier: tier || 0
+    };
+  }
+
+  function pokedexMatchingAgents(pokemonId) {
+    var snapshot = appState.snapshot || {};
+    var matches = [];
+    var seenAgentIds = {};
+
+    function addAgent(agent, source) {
+      if (!agent || !agent.agentId || seenAgentIds[agent.agentId]) return;
+      if (Number(getRenderPokemonId(agent)) !== pokemonId) return;
+      seenAgentIds[agent.agentId] = true;
+      matches.push({ agent: agent, source: source });
+    }
+
+    var liveAgents = Array.isArray(snapshot.agents) ? snapshot.agents : [];
+    var boxedAgents = Array.isArray(snapshot.boxedAgents) ? snapshot.boxedAgents : [];
+    var subhistoryAgents = Array.isArray(snapshot.subagentHistory) ? snapshot.subagentHistory : [];
+
+    for (var i = 0; i < liveAgents.length; i++) addAgent(liveAgents[i], 'live');
+    for (var j = 0; j < boxedAgents.length; j++) addAgent(boxedAgents[j], 'boxed');
+    for (var k = 0; k < subhistoryAgents.length; k++) addAgent(subhistoryAgents[k], 'subhistory');
+
+    return matches;
+  }
+
+  function pokedexEncounterCount(pokemonId) {
+    var matches = pokedexMatchingAgents(pokemonId);
+    var discovery = pokedexDiscoveryInfo(pokemonId);
+    var countedAgents = {};
+    var count = matches.length;
+
+    for (var i = 0; i < matches.length; i++) {
+      countedAgents[matches[i].agent.agentId] = true;
+    }
+
+    if (discovery && discovery.agentId && !countedAgents[discovery.agentId]) {
+      count += 1;
+    }
+
+    return count;
+  }
+
+  function pokedexRecentSightingInfo(pokemonId) {
+    var matches = pokedexMatchingAgents(pokemonId);
+    var best = null;
+    var discovery = pokedexDiscoveryInfo(pokemonId);
+
+    for (var i = 0; i < matches.length; i++) {
+      var match = matches[i];
+      var agent = match.agent;
+      var ts = match.source === 'live'
+        ? (agent.lastSeen || agent.createdAt || 0)
+        : (agent.doneAt || agent.lastSeen || agent.createdAt || 0);
+      if (!best || ts > best.ts) {
+        best = {
+          ts: ts,
+          projectId: agent.projectId || null
+        };
+      }
+    }
+
+    if (best) return best;
+    if (!discovery) return null;
+
+    return {
+      ts: discovery.discoveredAt || discovery.createdAt || 0,
+      projectId: discovery.projectId || null
+    };
+  }
+
+  function pokedexHabitatLabel(pokemonId) {
+    var areaIndex = getPokemonAreaIndex(pokemonId);
+    if (areaIndex >= 0 && AREA_DEFS[areaIndex]) {
+      if (uiState.pokedexLanguage === 'ko') {
+        return {
+          mountain: '\uc0b0\uc545',
+          cave: '\ub3d9\uad74',
+          forest: '\uc232',
+          ruin: '\uc720\uc801',
+          rough_terrain: '\ud5d8\uc9c0',
+          grassland: '\ucd08\uc6d0',
+          urban: '\ub3c4\uc2dc',
+          waters_edge: '\ubb3c\uac00',
+          sea: '\ubc14\ub2e4'
+        }[AREA_DEFS[areaIndex].id] || AREA_DEFS[areaIndex].label;
+      }
+      return AREA_DEFS[areaIndex].label;
+    }
+
+    var rawHabitat = pokemonHabitat[pokemonId];
+    if (!rawHabitat) {
+      return uiState.pokedexLanguage === 'ko' ? '\ubbf8\ud655\uc778' : 'Unknown';
+    }
+    return formatPokemonName(String(rawHabitat).replace(/_/g, '-'));
+  }
+
+  function pokedexTooltipLabels() {
+    if (uiState.pokedexLanguage === 'ko') {
+      return {
+        metCount: '\ub9cc\ub09c \ud69f\uc218',
+        habitat: '\uc11c\uc2dd\uc9c0',
+        firstMeet: '\uccab \ub9cc\ub0a8',
+        firstMeetHint: '\ucc98\uc74c \uae30\ub85d\ub41c \uc2dc\uac04',
+        recentSeen: '\ucd5c\uadfc \ubaa9\uaca9',
+        recentSeenHint: '\ub9c8\uc9c0\ub9c9\uc73c\ub85c \ud655\uc778\ub41c \uc2dc\uac04',
+        project: '\ud504\ub85c\uc81d\ud2b8',
+        date: '\ub0a0\uc9dc',
+        time: '\uc2dc\uac04',
+        undiscovered: '\uc544\uc9c1 \ub9cc\ub09c \uae30\ub85d\uc774 \uc5c6\uc5b4\uc694.'
+      };
+    }
+    return {
+      metCount: 'Met',
+      habitat: 'Habitat',
+      firstMeet: 'First encounter',
+      firstMeetHint: 'First recorded moment',
+      recentSeen: 'Recent sighting',
+      recentSeenHint: 'Most recently observed',
+      project: 'Project',
+      date: 'Date',
+      time: 'Time',
+      undiscovered: 'No encounter recorded yet.'
     };
   }
 
@@ -1874,6 +2049,24 @@
     var m = String(d.getMinutes()).padStart(2, '0');
     var s = String(d.getSeconds()).padStart(2, '0');
     return mo + '/' + day + ' ' + h + ':' + m + ':' + s;
+  }
+
+  function formatDateStamp(ts) {
+    if (!ts) return '-';
+    var d = new Date(ts);
+    var year = d.getFullYear();
+    var mo = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return year + '.' + mo + '.' + day;
+  }
+
+  function formatClockTime(ts) {
+    if (!ts) return '-';
+    var d = new Date(ts);
+    var h = String(d.getHours()).padStart(2, '0');
+    var m = String(d.getMinutes()).padStart(2, '0');
+    var s = String(d.getSeconds()).padStart(2, '0');
+    return h + ':' + m + ':' + s;
   }
 
   function formatDuration(startTs, endTs) {
@@ -3338,7 +3531,6 @@
     html += '<div class="summary-tooltip-portrait">';
     html += '<span class="summary-tooltip-status summary-status-' + tooltipStatusClass(statusText) + '">' + escapeHtml(statusText) + '</span>';
     html += '<img class="summary-tooltip-sprite" src="' + escapeHtml(spriteUrl) + '" />';
-    html += '<span class="summary-tooltip-ball" aria-hidden="true"></span>';
     html += '</div>';
     html += '</div>';
     html += '<div class="summary-tooltip-right">';
@@ -3434,8 +3626,17 @@
 
   function showPokedexTooltip(pokemonId, anchorRect) {
     var discovery = pokedexDiscoveryInfo(pokemonId);
-    var rarity = discovery ? getPokemonRarity(pokemonId) : null;
+    var rarity = getPokemonRarity(pokemonId);
+    var labels = pokedexTooltipLabels();
     var name = pokemonDisplayName(pokemonId);
+    var encounterCount = pokedexEncounterCount(pokemonId);
+    var encounterText = uiState.pokedexLanguage === 'ko'
+      ? encounterCount + '번'
+      : encounterCount + (encounterCount === 1 ? ' time' : ' times');
+    var firstMetAt = discovery ? (discovery.discoveredAt || discovery.createdAt) : null;
+    var projectName = discovery && discovery.projectId && discovery.projectId !== 'unknown-project'
+      ? shortProjectName(discovery.projectId)
+      : '-';
     var html = '';
 
     html += '<div class="pokedex-tooltip-head">';
@@ -3443,7 +3644,6 @@
     html += '<span class="pokedex-tooltip-number">#' + String(pokemonId).padStart(3, '0') + '</span>';
     html += '<div class="pokedex-tooltip-title-wrap">';
     html += '<div class="pokedex-tooltip-title">' + escapeHtml(name) + '</div>';
-    html += '<div class="pokedex-tooltip-subtitle">First discovery record</div>';
     html += '</div>';
     html += '</div>';
     if (rarity) {
@@ -3451,39 +3651,46 @@
     }
     html += '</div>';
 
+    html += '<div class="pokedex-tooltip-body">';
+    html += '<div class="pokedex-tooltip-stat">';
+    html += '<span class="pokedex-tooltip-stat-label">' + escapeHtml(labels.metCount) + '</span>';
+    html += '<span class="pokedex-tooltip-stat-value">' + escapeHtml(encounterText) + '</span>';
+    html += '</div>';
+
+    html += '<div class="pokedex-tooltip-section">';
+    html += '<div class="pokedex-tooltip-section-head">';
+    html += '<span class="pokedex-tooltip-section-title">' + escapeHtml(labels.firstMeet) + '</span>';
+    html += '<span class="pokedex-tooltip-section-subtitle">' + escapeHtml(labels.firstMeetHint) + '</span>';
+    html += '</div>';
+
     if (discovery) {
-      html += '<div class="pokedex-tooltip-details">';
-      if (discovery.viaSubagent) {
-        html += '<div class="pokedex-tooltip-item">';
-        html += '<span class="pokedex-tooltip-label">Origin</span>';
-        html += '<span class="pokedex-tooltip-value">' + escapeHtml((discovery.parentName || discovery.parentId || 'Unknown') + ' sub-agent') + '</span>';
-        html += '</div>';
-      }
-      html += '<div class="pokedex-tooltip-item">';
-      html += '<span class="pokedex-tooltip-label">Name</span>';
-      html += '<span class="pokedex-tooltip-value">' + escapeHtml(discovery.agentName || discovery.agentId || '-') + '</span>';
+      html += '<div class="pokedex-tooltip-first-card">';
+      html += '<div class="pokedex-tooltip-project-row">';
+      html += '<span class="pokedex-tooltip-project-label">' + escapeHtml(labels.project) + '</span>';
+      html += '<span class="pokedex-tooltip-project-name">' + escapeHtml(projectName) + '</span>';
       html += '</div>';
-      html += '<div class="pokedex-tooltip-item">';
-      html += '<span class="pokedex-tooltip-label">Created</span>';
-      html += '<span class="pokedex-tooltip-value">' + escapeHtml(formatTime(discovery.createdAt)) + '</span>';
+      html += '<div class="pokedex-tooltip-timestamp-grid">';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.date) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatDateStamp(firstMetAt)) + '</span>';
       html += '</div>';
-      html += '<div class="pokedex-tooltip-item">';
-      html += '<span class="pokedex-tooltip-label">Project</span>';
-      html += '<span class="pokedex-tooltip-value">' + escapeHtml(discovery.projectId || '-') + '</span>';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.time) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatClockTime(firstMetAt)) + '</span>';
       html += '</div>';
-      html += '<div class="pokedex-tooltip-item">';
-      html += '<span class="pokedex-tooltip-label">Session</span>';
-      html += '<span class="pokedex-tooltip-value">' + escapeHtml(discovery.sessionId || '-') + '</span>';
       html += '</div>';
       html += '</div>';
     } else {
-      html += '<div class="pokedex-tooltip-empty">Not discovered yet.</div>';
+      html += '<div class="pokedex-tooltip-empty">' + escapeHtml(labels.undiscovered) + '</div>';
     }
+
+    html += '</div>';
+    html += '</div>';
 
     pokedexTooltipEl.innerHTML = html;
     pokedexTooltipEl.style.display = 'block';
 
-    var tw = 240;
+    var tw = pokedexTooltipEl.offsetWidth || 296;
     var left = anchorRect.left + anchorRect.width / 2 - tw / 2;
     left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
     var th = pokedexTooltipEl.offsetHeight;
@@ -3495,6 +3702,116 @@
 
   function hidePokedexTooltip() {
     pokedexTooltipEl.style.display = 'none';
+  }
+
+  function showPokedexTooltip(pokemonId, anchorRect) {
+    var discovery = pokedexDiscoveryInfo(pokemonId);
+    var recentSighting = pokedexRecentSightingInfo(pokemonId);
+    var rarity = getPokemonRarity(pokemonId);
+    var labels = pokedexTooltipLabels();
+    var name = pokemonDisplayName(pokemonId);
+    var encounterText = String(pokedexEncounterCount(pokemonId));
+    var habitatName = pokedexHabitatLabel(pokemonId);
+    var firstMetAt = discovery ? (discovery.discoveredAt || discovery.createdAt) : null;
+    var projectName = discovery && discovery.projectId && discovery.projectId !== 'unknown-project'
+      ? shortProjectName(discovery.projectId)
+      : '-';
+    var recentSeenAt = recentSighting ? recentSighting.ts : null;
+    var recentProjectName = recentSighting && recentSighting.projectId && recentSighting.projectId !== 'unknown-project'
+      ? shortProjectName(recentSighting.projectId)
+      : '-';
+    var html = '';
+
+    html += '<div class="pokedex-tooltip-head">';
+    html += '<div class="pokedex-tooltip-head-main">';
+    html += '<span class="pokedex-tooltip-number">#' + String(pokemonId).padStart(3, '0') + '</span>';
+    html += '<div class="pokedex-tooltip-title-wrap">';
+    html += '<div class="pokedex-tooltip-title">' + escapeHtml(name) + '</div>';
+    html += '</div>';
+    html += '</div>';
+    if (rarity) {
+      html += '<span class="pokedex-rarity-badge tier-' + rarity.tier + '">' + escapeHtml(rarity.label) + '</span>';
+    }
+    html += '</div>';
+
+    html += '<div class="pokedex-tooltip-body">';
+    html += '<div class="pokedex-tooltip-facts">';
+    html += '<div class="pokedex-tooltip-fact">';
+    html += '<span class="pokedex-tooltip-fact-label">' + escapeHtml(labels.metCount) + '</span>';
+    html += '<span class="pokedex-tooltip-fact-value">' + escapeHtml(encounterText) + '</span>';
+    html += '</div>';
+    html += '<div class="pokedex-tooltip-fact">';
+    html += '<span class="pokedex-tooltip-fact-label">' + escapeHtml(labels.habitat) + '</span>';
+    html += '<span class="pokedex-tooltip-fact-value">' + escapeHtml(habitatName) + '</span>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div class="pokedex-tooltip-section">';
+    html += '<div class="pokedex-tooltip-section-head">';
+    html += '<span class="pokedex-tooltip-section-title">' + escapeHtml(labels.firstMeet) + '</span>';
+    html += '<span class="pokedex-tooltip-section-subtitle">' + escapeHtml(labels.firstMeetHint) + '</span>';
+    html += '</div>';
+    if (discovery) {
+      html += '<div class="pokedex-tooltip-first-card">';
+      html += '<div class="pokedex-tooltip-project-row">';
+      html += '<span class="pokedex-tooltip-project-label">' + escapeHtml(labels.project) + '</span>';
+      html += '<span class="pokedex-tooltip-project-name">' + escapeHtml(projectName) + '</span>';
+      html += '</div>';
+      html += '<div class="pokedex-tooltip-timestamp-grid">';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.date) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatDateStamp(firstMetAt)) + '</span>';
+      html += '</div>';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.time) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatClockTime(firstMetAt)) + '</span>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="pokedex-tooltip-empty">' + escapeHtml(labels.undiscovered) + '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="pokedex-tooltip-section">';
+    html += '<div class="pokedex-tooltip-section-head">';
+    html += '<span class="pokedex-tooltip-section-title">' + escapeHtml(labels.recentSeen) + '</span>';
+    html += '<span class="pokedex-tooltip-section-subtitle">' + escapeHtml(labels.recentSeenHint) + '</span>';
+    html += '</div>';
+    if (recentSighting) {
+      html += '<div class="pokedex-tooltip-first-card">';
+      html += '<div class="pokedex-tooltip-project-row">';
+      html += '<span class="pokedex-tooltip-project-label">' + escapeHtml(labels.project) + '</span>';
+      html += '<span class="pokedex-tooltip-project-name">' + escapeHtml(recentProjectName) + '</span>';
+      html += '</div>';
+      html += '<div class="pokedex-tooltip-timestamp-grid">';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.date) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatDateStamp(recentSeenAt)) + '</span>';
+      html += '</div>';
+      html += '<div class="pokedex-tooltip-timestamp-item">';
+      html += '<span class="pokedex-tooltip-timestamp-label">' + escapeHtml(labels.time) + '</span>';
+      html += '<span class="pokedex-tooltip-timestamp-value">' + escapeHtml(formatClockTime(recentSeenAt)) + '</span>';
+      html += '</div>';
+      html += '</div>';
+      html += '</div>';
+    } else {
+      html += '<div class="pokedex-tooltip-empty">' + escapeHtml(labels.undiscovered) + '</div>';
+    }
+    html += '</div>';
+    html += '</div>';
+
+    pokedexTooltipEl.innerHTML = html;
+    pokedexTooltipEl.style.display = 'block';
+
+    var tw = pokedexTooltipEl.offsetWidth || 296;
+    var left = anchorRect.left + anchorRect.width / 2 - tw / 2;
+    left = Math.max(4, Math.min(left, window.innerWidth - tw - 4));
+    var th = pokedexTooltipEl.offsetHeight;
+    var top = anchorRect.top - th - 8;
+    if (top < 4) top = anchorRect.bottom + 8;
+    pokedexTooltipEl.style.left = left + 'px';
+    pokedexTooltipEl.style.top = top + 'px';
   }
 
   function showSubhistoryTooltip(agent, anchorRect) {

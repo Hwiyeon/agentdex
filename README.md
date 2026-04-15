@@ -47,9 +47,15 @@ Every active session gets assigned a Pokemon and dropped onto a tiny island map 
 
 ### Agents Panel
 
-![Agents panel](imgs/pokemon_tab.jpg)
+<table>
+  <tr>
+    <td width="50%"><img src="imgs/pokemon_tab.jpg" alt="Agents panel" /></td>
+    <td width="50%"><img src="imgs/status.jpg" alt="Agent status card" /></td>
+  </tr>
+</table>
 
 - Every spawned Pokemon is mirrored in the left panel so you can see the active roster at a glance.
+- The status card condenses a single agent into a quick readout of recent command, last activity, model, and live HP/EXP progress.
 - `LV` and `EXP` grow with token spend.
 - `HP` drops as the session burns through its context window — a useful signal for when to wrap up and start fresh.
 - When a subagent is summoned, the panel shows its hierarchy under the parent.
