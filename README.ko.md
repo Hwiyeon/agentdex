@@ -20,8 +20,13 @@
 - `Status` — thinking, tool, outputting, waiting, sleeping 중 어떤 상태인지 표시
 - `Pokedex` — 지금까지 스폰한 모든 포켓몬을 기록하는 도감
 
+## Recent Updates
+
+- **HP bar가 context compression threshold를 반영합니다.** Claude Code 설정 또는 환경 변수에 `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`가 지정되어 있으면, HP가 원본 모델 context 한계가 아니라 해당 auto-compaction threshold에서 0이 됩니다 — Claude Code가 auto-compact하기 전까지 실제로 사용 가능한 context를 HP가 추적합니다.
+
 ## 목차
 
+- [Recent Updates](#recent-updates)
 - [필드 가이드](#필드-가이드)
   - [Island](#island)
   - [Agents Panel](#agents-panel)

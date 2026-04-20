@@ -20,8 +20,13 @@ Every active session gets assigned a Pokemon and dropped onto a tiny island map 
 - `Status` — thinking, using a tool, outputting, waiting, or sleeping
 - `Pokedex` — your running collection of every Pokemon you've ever spawned
 
+## Recent Updates
+
+- **HP bar respects the context compression threshold.** When `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is set in your Claude Code settings or environment, HP now hits 0 at that auto-compaction threshold instead of the raw model context limit — so HP tracks the context actually usable before Claude Code auto-compacts.
+
 ## Table of Contents
 
+- [Recent Updates](#recent-updates)
 - [Field Guide](#field-guide)
   - [Island](#island)
   - [Agents Panel](#agents-panel)

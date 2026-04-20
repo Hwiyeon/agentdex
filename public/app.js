@@ -2464,16 +2464,26 @@
     return '#e85040';
   }
 
-  function formatResetTime(epoch) {
-    if (!epoch) return '';
+  function formatRemainingShort(epoch) {
+    if (!epoch) return '-';
+    var diffMs = epoch * 1000 - Date.now();
+    if (diffMs <= 0) return 'now';
+    var totalMin = Math.floor(diffMs / 60000);
+    var h = Math.floor(totalMin / 60);
+    var m = totalMin % 60;
+    if (h > 0) return h + 'h ' + m + 'm';
+    return m + 'm';
+  }
+
+  function formatResetAtShort(epoch) {
+    if (!epoch) return '-';
     var d = new Date(epoch * 1000);
-    var now = new Date();
-    var diffMs = d - now;
-    if (diffMs <= 0) return 'reset imminent';
-    var h = Math.floor(diffMs / 3600000);
-    var m = Math.floor((diffMs % 3600000) / 60000);
-    if (h > 0) return 'resets in ' + h + 'h ' + m + 'm';
-    return 'resets in ' + m + 'm';
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var mo = MONTHS[d.getMonth()];
+    var day = d.getDate();
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mm = String(d.getMinutes()).padStart(2, '0');
+    return mo + ' ' + day + ' ' + hh + ':' + mm;
   }
 
   function updateRateLimits(rateLimits) {
@@ -2492,7 +2502,7 @@
       rate5hFillEl.style.background = color5;
       rate5hPctEl.textContent = remain5.toFixed(1) + '%';
       rate5hPctEl.style.color = color5;
-      rate5hFillEl.parentElement.parentElement.title = '5-hour window: ' + remain5.toFixed(1) + '% remaining\n' + formatResetTime(fh.resets_at);
+      rate5hFillEl.parentElement.parentElement.setAttribute('data-tooltip', '5H: ' + remain5.toFixed(1) + '% remaining\n' + formatRemainingShort(fh.resets_at) + ' left');
     }
     if (sd && typeof sd.used_percentage === 'number') {
       var used7 = Math.min(100, Math.max(0, sd.used_percentage));
@@ -2502,7 +2512,7 @@
       rate7dFillEl.style.background = color7;
       rate7dPctEl.textContent = remain7.toFixed(1) + '%';
       rate7dPctEl.style.color = color7;
-      rate7dFillEl.parentElement.parentElement.title = '7-day window: ' + remain7.toFixed(1) + '% remaining\n' + formatResetTime(sd.resets_at);
+      rate7dFillEl.parentElement.parentElement.setAttribute('data-tooltip', '7D: ' + remain7.toFixed(1) + '% remaining\nresets ' + formatResetAtShort(sd.resets_at));
     }
   }
 
@@ -3516,11 +3526,15 @@
 
     memoLines.push({ html: 'Met in <span class="summary-tooltip-project-accent">' + escapeHtml(projName) + '</span> at ' + escapeHtml(metAtText) + '.', accent: false });
 
+    var rarity = getPokemonRarity(getRenderPokemonId(agent));
+
     var html = '';
     html += '<div class="summary-tooltip-shell' + (archived ? ' archived' : ' live') + '">';
     html += '<div class="summary-tooltip-topbar">';
     html += '<span class="summary-tooltip-window-title">' + (archived ? 'Archive Info' : 'Agent Info') + '</span>';
-    html += '<span class="summary-tooltip-page">' + (archived ? 'BOX PAGE' : 'LIVE PAGE') + '</span>';
+    if (rarity) {
+      html += '<span class="pokedex-rarity-badge tier-' + rarity.tier + '">' + escapeHtml(rarity.label) + '</span>';
+    }
     html += '</div>';
     html += '<div class="summary-tooltip-main">';
     html += '<div class="summary-tooltip-left">';

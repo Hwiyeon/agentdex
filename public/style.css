@@ -160,9 +160,29 @@ body {
 }
 
 .rate-limit-bar {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.rate-limit-bar[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: #1a1a2e;
+  color: #e6e6e6;
+  border: 1px solid #3a3a4a;
+  padding: 5px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: pre;
+  border-radius: 3px;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
 .rate-limit-label {
@@ -2868,21 +2888,16 @@ body {
   justify-content: space-between;
   gap: 10px;
   padding: 8px 10px 7px;
-  background:
-    radial-gradient(circle at 92% 34%, rgba(255, 255, 255, 0.86) 0 5px, transparent 6px),
-    linear-gradient(90deg, #0f6397 0%, #288fc0 58%, #7cc2df 100%);
+  background: linear-gradient(90deg, #0f6397 0%, #288fc0 58%, #7cc2df 100%);
   color: #fffef8;
   text-shadow: 1px 1px 0 rgba(18, 55, 75, 0.34);
 }
 
 .summary-tooltip-shell.archived .summary-tooltip-topbar {
-  background:
-    radial-gradient(circle at 92% 34%, rgba(255, 255, 255, 0.78) 0 5px, transparent 6px),
-    linear-gradient(90deg, #5d7292 0%, #7d95b7 58%, #b8c9df 100%);
+  background: linear-gradient(90deg, #5d7292 0%, #7d95b7 58%, #b8c9df 100%);
 }
 
-.summary-tooltip-window-title,
-.summary-tooltip-page {
+.summary-tooltip-window-title {
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.45px;
