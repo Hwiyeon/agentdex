@@ -15,33 +15,48 @@ const GEN5_ANIMATED_DIR = path.join(GEN5_DIR, 'animated');
 const GEN5_ICON_DIR = path.join(POKEAPI_POKEMON_DIR, 'versions', 'generation-v', 'icons');
 const GEN5_ICON_ANIMATED_DIR = path.join(GEN5_ICON_DIR, 'animated');
 
-function spriteCandidates(kind, fileName) {
+function spriteCandidatesIn(rootDir, kind, fileName) {
+  const logicalRoot = path.resolve(rootDir);
+  const logicalPath = path.join(logicalRoot, kind, fileName);
+  const gen5Dir = path.join(logicalRoot, 'sprites', 'pokemon', 'versions', 'generation-v');
+  const blackWhiteDir = path.join(gen5Dir, 'black-white');
+  const iconsDir = path.join(gen5Dir, 'icons');
+
   if (kind === 'static') {
     return [
-      path.join(GEN5_STATIC_DIR, fileName)
+      logicalPath,
+      path.join(blackWhiteDir, fileName)
     ];
   }
 
   if (kind === 'animated') {
     return [
-      path.join(GEN5_ANIMATED_DIR, fileName)
+      logicalPath,
+      path.join(blackWhiteDir, 'animated', fileName)
     ];
   }
 
   if (kind === 'icon') {
     return [
-      path.join(GEN5_ICON_ANIMATED_DIR, fileName),
-      path.join(GEN5_ICON_DIR, fileName)
+      logicalPath,
+      path.join(iconsDir, 'animated', fileName),
+      path.join(iconsDir, fileName),
+      path.join(logicalRoot, 'icon-static', fileName)
     ];
   }
 
   if (kind === 'icon-static') {
     return [
-      path.join(GEN5_ICON_DIR, fileName)
+      logicalPath,
+      path.join(iconsDir, fileName)
     ];
   }
 
   return [];
+}
+
+function spriteCandidates(kind, fileName) {
+  return spriteCandidatesIn(POKEAPI_SPRITES_DIR, kind, fileName);
 }
 
 module.exports = {
@@ -57,5 +72,6 @@ module.exports = {
   GEN5_ANIMATED_DIR,
   GEN5_ICON_DIR,
   GEN5_ICON_ANIMATED_DIR,
-  spriteCandidates
+  spriteCandidates,
+  spriteCandidatesIn
 };

@@ -2,54 +2,44 @@
 
 const { test, run } = require('./runner');
 const assert = require('assert').strict;
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { spawnSync } = require('child_process');
 const { StringDecoder } = require('string_decoder');
 
 const { EVENT_TYPES, normalizeLine } = require('../parser');
 const { AgentState } = require('../state');
 const { TranscriptWatcher } = require('../watcher');
 
-function extractCreateMockDriver() {
-  const cliPath = path.join(__dirname, '..', 'cli.js');
-  const source = fs.readFileSync(cliPath, 'utf8');
-  const start = source.indexOf('function createMockDriver(state)');
-  const end = source.indexOf('async function run()');
-  assert.ok(start >= 0 && end > start, 'createMockDriver source not found');
-
-  const vm = require('vm');
-  const context = {
-    require,
-    console,
-    setInterval,
-    clearInterval,
-    setTimeout,
-    clearTimeout,
-    process,
-    Buffer,
-    Date,
-    Math,
-    crypto: require('crypto'),
-    EVENT_TYPES,
-    nowMs: () => Date.now()
-  };
-  vm.createContext(context);
-  vm.runInContext(`${source.slice(start, end)}; this.createMockDriver = createMockDriver;`, context);
-  return context.createMockDriver;
-}
-
 test('CLI supports --help without starting the server', () => {
   const cliPath = path.join(__dirname, '..', 'cli.js');
   const result = spawnSync(process.execPath, [cliPath, '--help'], {
-    cwd: path.join(__dirname, '..'),
-    encoding: 'utf8',
-    timeout: 5000
+    encoding: 'utf8'
   });
 
-  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.status, 0);
   assert.match(result.stdout, /Usage:/);
+  assert.equal(result.stderr, '');
+});
+
+test('package entry can be required without vscode installed', () => {
+  const pkg = require('..');
+
+  assert.equal(typeof pkg.activate, 'function');
+  assert.equal(typeof pkg.run, 'function');
+});
+
+test('package entry supports node dot help', () => {
+  const repoRoot = path.join(__dirname, '..');
+  const result = spawnSync(process.execPath, ['.', '--help'], {
+    cwd: repoRoot,
+    encoding: 'utf8'
+  });
+
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /Usage:/);
+  assert.equal(result.stderr, '');
 });
 
 test('explicit spawn events do not create a ghost agent id', () => {
@@ -274,7 +264,7 @@ test('state restore trims oversized boxed and subagent history buffers', () => {
 });
 
 test('mock driver seeds initial root agents with visible last commands', () => {
-  const createMockDriver = extractCreateMockDriver();
+  const { createMockDriver } = require('../cli');
   const state = new AgentState({
     boxSubagentsImmediately: false
   });
@@ -289,7 +279,7 @@ test('mock driver seeds initial root agents with visible last commands', () => {
 });
 
 test('mock driver lets some root agents fall asleep after inactivity', async () => {
-  const createMockDriver = extractCreateMockDriver();
+  const { createMockDriver } = require('../cli');
   const state = new AgentState({
     activeTimeoutSec: 1,
     staleTimeoutSec: 20,

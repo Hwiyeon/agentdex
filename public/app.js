@@ -1,6 +1,78 @@
 (() => {
   'use strict';
 
+  const __vscode = typeof acquireVsCodeApi === 'function' ? acquireVsCodeApi() : null;
+  const __assetBase = (typeof window !== 'undefined' && window.__PAS_ASSET_BASE__) || '';
+  const __dataBase = (typeof window !== 'undefined' && window.__PAS_DATA_BASE__) || '';
+
+  function joinBase(base, leaf) {
+    return String(base).replace(/\/+$/, '') + '/' + String(leaf).replace(/^\/+/, '');
+  }
+
+  function spriteUrl(kind, id, ext) {
+    const leaf = kind + '/' + id + '.' + ext;
+    return __assetBase ? joinBase(__assetBase, leaf) : ('/sprites/' + leaf);
+  }
+
+  function dataUrl(name) {
+    return __dataBase ? joinBase(__dataBase, name) : ('/data/' + name);
+  }
+
+  const transport = __vscode ? {
+    async connect(onState) {
+      function handleMessage(event) {
+        if (event.data && event.data.type === 'state') {
+          onState(event.data.snapshot);
+        }
+      }
+      window.addEventListener('message', handleMessage);
+      __vscode.postMessage({ type: 'ready' });
+      return {
+        dispose() {
+          window.removeEventListener('message', handleMessage);
+        }
+      };
+    },
+    box(id) {
+      __vscode.postMessage({ type: 'box', id: id });
+      return Promise.resolve({ ok: true });
+    },
+    unbox(id) {
+      __vscode.postMessage({ type: 'unbox', id: id });
+      return Promise.resolve({ ok: true });
+    },
+    hardReset() {
+      __vscode.postMessage({ type: 'hardReset' });
+      return Promise.resolve({ ok: true });
+    }
+  } : {
+    async connect(onState) {
+      const res = await fetch('/api/state', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('state load failed: ' + res.status);
+      onState(await res.json());
+
+      const stream = new EventSource('/events');
+      stream.addEventListener('state', function (event) {
+        try { onState(JSON.parse(event.data)); } catch (_) {}
+      });
+      stream.onerror = function () {};
+      return {
+        dispose() {
+          stream.close();
+        }
+      };
+    },
+    box(id) {
+      return fetch('/api/box/' + encodeURIComponent(id), { method: 'POST' });
+    },
+    unbox(id) {
+      return fetch('/api/unbox/' + encodeURIComponent(id), { method: 'POST' });
+    },
+    hardReset() {
+      return fetch('/api/hard-reset', { method: 'POST' });
+    }
+  };
+
   const WORLD_WIDTH = 480;
   const WORLD_HEIGHT = 320;
   const SPRITE_SIZE = 16;
@@ -132,7 +204,7 @@
       relocateEntitiesToMask();
       savePositionCache();
     };
-    img.src = '/data/area_mask.png';
+    img.src = dataUrl('area_mask.png');
   })();
 
   // Re-position all existing entities using mask data (called once after mask loads)
@@ -637,7 +709,7 @@
 
   (function loadPokemonData() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/data/pokemon_data.json');
+      xhr.open('GET', dataUrl('pokemon_data.json'));
     xhr.onload = function () {
       if (xhr.status !== 200) return;
       try {
@@ -687,7 +759,7 @@
 
   (function loadPokemonKoNames() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/data/pokemon_names_ko.json');
+      xhr.open('GET', dataUrl('pokemon_names_ko.json'));
     xhr.onload = function () {
       if (xhr.status !== 200) return;
       try {
@@ -1259,7 +1331,7 @@
       var folder = spec.folder;
       var cacheKey = folder + ':' + id;
       if (this.urls.has(cacheKey)) return this.urls.get(cacheKey);
-      var url = '/sprites/' + folder + '/' + id + '.' + spec.ext;
+      var url = spriteUrl(folder, id, spec.ext);
       this.urls.set(cacheKey, url);
       // Preload to detect failures
       var img = new Image();
@@ -1314,8 +1386,8 @@
       };
       animatedImg.onerror = finish;
 
-      staticImg.src = '/sprites/static/' + id + '.png';
-      animatedImg.src = '/sprites/animated/' + id + '.gif';
+      staticImg.src = spriteUrl('static', id, 'png');
+      animatedImg.src = spriteUrl('animated', id, 'gif');
     }
   }
 
@@ -2404,22 +2476,22 @@
   function pokemonSpriteUrl(agent, sleeping) {
     var id = getRenderPokemonId(agent);
     var spec = pokemonSpriteSpec(sleeping);
-    return '/sprites/' + spec.folder + '/' + id + '.' + spec.ext;
+    return spriteUrl(spec.folder, id, spec.ext);
   }
 
   function pokemonIconUrl(agent) {
     var id = getRenderPokemonId(agent);
-    return '/sprites/icon/' + id + '.png';
+    return spriteUrl('icon', id, 'png');
   }
 
   function pokemonAnimatedSpriteUrl(agent) {
     var id = getRenderPokemonId(agent);
-    return '/sprites/animated/' + id + '.gif';
+    return spriteUrl('animated', id, 'gif');
   }
 
   function pokemonStaticIconUrl(agent) {
     var id = getRenderPokemonId(agent);
-    return '/sprites/icon-static/' + id + '.png';
+    return spriteUrl('icon-static', id, 'png');
   }
 
   function pokemonSpriteSpec(sleeping) {
@@ -3276,7 +3348,7 @@
     var btn = e.target.closest('[data-action="box"]');
     if (btn) {
       var agentId = btn.getAttribute('data-agent-id');
-      fetch('/api/box/' + encodeURIComponent(agentId), { method: 'POST' });
+      transport.box(agentId);
       hideMapTooltip();
     }
   });
@@ -4002,7 +4074,7 @@
       html += '</div>';
       html += '<div class="pokedex-media">';
       if (seen) {
-        html += '<img class="pokedex-icon" src="/sprites/animated/' + pokemonId + '.gif" alt="' + escapeHtml(pokemonDisplayName(pokemonId)) + '" loading="lazy" />';
+        html += '<img class="pokedex-icon" src="' + escapeHtml(spriteUrl('animated', pokemonId, 'gif')) + '" alt="' + escapeHtml(pokemonDisplayName(pokemonId)) + '" loading="lazy" />';
       } else {
         html += '<span class="pokedex-unknown">?</span>';
       }
@@ -4048,7 +4120,7 @@
   (function loadTerrainImage() {
     var img = new Image();
     img.onload = function () { terrainImage = img; };
-    img.src = '/data/island_map_cc.png';
+    img.src = dataUrl('island_map_cc.png');
   })();
 
   function drawBackground() {
@@ -4516,20 +4588,10 @@
     requestAnimationFrame(render);
   }
 
-  async function loadInitialState() {
-    const res = await fetch('/api/state', { cache: 'no-cache' });
-    if (!res.ok) throw new Error('state load failed: ' + res.status);
-    const data = await res.json();
-    applySnapshot(data);
-  }
-
-  function connectEvents() {
-    const stream = new EventSource('/events');
-    stream.addEventListener('state', function (event) {
-      try { applySnapshot(JSON.parse(event.data)); } catch (e) {}
+  async function connectStateTransport() {
+    return transport.connect(function (snapshot) {
+      applySnapshot(snapshot);
     });
-    stream.onerror = function () {};
-    return stream;
   }
 
   function bindUi() {
@@ -4695,8 +4757,8 @@
         if (!window.confirm('Reset ' + mode + ' state, boxed agents, and discovered Pokedex progress?')) return;
         hardResetBtnEl.disabled = true;
         try {
-          var res = await fetch('/api/hard-reset', { method: 'POST' });
-          if (!res.ok) {
+          var res = await transport.hardReset();
+          if (res && res.ok === false) {
             throw new Error('hard reset failed: ' + res.status);
           }
           resetFilters();
@@ -4721,7 +4783,7 @@
           }
           return;
         }
-        fetch('/api/box/' + encodeURIComponent(agentId), { method: 'POST' });
+        transport.box(agentId);
         return;
       }
       btn = e.target.closest('[data-action="toggle-subtree"]');
@@ -4765,7 +4827,7 @@
           unboxPromoRoot(agentId);
           return;
         }
-        fetch('/api/unbox/' + encodeURIComponent(agentId), { method: 'POST' });
+        transport.unbox(agentId);
         return;
       }
       btn = e.target.closest('[data-action="open-subhistory"]');
@@ -4922,10 +4984,9 @@
   async function boot() {
     bindUi();
     setCanvasSize();
-    try { await loadInitialState(); } catch (e) {
+    try { await connectStateTransport(); } catch (e) {
       agentListEl.innerHTML = '<div class="agent-card">Failed to load state: ' + escapeHtml(e.message) + '</div>';
     }
-    connectEvents();
     requestAnimationFrame(render);
   }
 

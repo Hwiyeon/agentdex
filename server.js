@@ -5,9 +5,9 @@ const fsp = fs.promises;
 const path = require('path');
 const os = require('os');
 const http = require('http');
-const url = require('url');
 const EventEmitter = require('events');
-const { spriteCandidates } = require('./paths');
+const { POKEAPI_SPRITES_DIR, spriteCandidatesIn } = require('./paths');
+const { buildPublicSnapshot } = require('./snapshotPayload');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -92,26 +92,8 @@ class DashboardServer extends EventEmitter {
     this.server = null;
   }
 
-  readRateLimits() {
-    try {
-      const metaPath = path.join(os.homedir(), '.claude', 'context_meta', '_rate_limits.json');
-      return JSON.parse(fs.readFileSync(metaPath, 'utf8')).rate_limits || null;
-    } catch (_) {
-      return null;
-    }
-  }
-
   snapshotPayload() {
-    return {
-      ...this.state.snapshot(),
-      rateLimits: this.readRateLimits(),
-      config: {
-        mode: this.publicConfig.mode || (this.publicConfig.isMockMode ? 'mock' : 'watch'),
-        enablePokeapiSprites: !!this.publicConfig.enablePokeapiSprites,
-        isMockMode: !!this.publicConfig.isMockMode,
-        supportsHardReset: !!this.publicConfig.supportsHardReset
-      }
-    };
+    return buildPublicSnapshot(this.state, this.publicConfig);
   }
 
   handleStateUpdate() {
@@ -132,7 +114,7 @@ class DashboardServer extends EventEmitter {
   }
 
   async route(req, res) {
-    const parsed = url.parse(req.url || '/', true);
+    const parsed = new URL(req.url || '/', 'http://127.0.0.1');
     const pathname = parsed.pathname || '/';
 
     if (pathname === '/events') {
@@ -263,7 +245,7 @@ class DashboardServer extends EventEmitter {
     if (parts.length === 3 && parts[0] === 'sprites' && (parts[1] === 'static' || parts[1] === 'animated' || parts[1] === 'icon' || parts[1] === 'icon-static')) {
       const kind = parts[1];
       const safeName = path.basename(parts[2]);
-      const candidates = spriteCandidates(kind, safeName);
+          const candidates = spriteCandidatesIn(POKEAPI_SPRITES_DIR, kind, safeName);
 
       for (const absolutePath of candidates) {
         try {

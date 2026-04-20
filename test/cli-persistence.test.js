@@ -2,11 +2,10 @@
 
 const { test, run } = require('./runner');
 const assert = require('assert').strict;
+const { spawnSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { spawnSync } = require('child_process');
-
 const { EVENT_TYPES } = require('../parser');
 const { AgentState } = require('../state');
 const {
@@ -144,11 +143,12 @@ test('hard-reset command clears only the selected mode persisted files', () => {
 
   const result = spawnSync(process.execPath, [cliPath, 'hard-reset', 'watch'], {
     cwd: tempRoot,
-    encoding: 'utf8',
-    timeout: 5000
+    encoding: 'utf8'
   });
 
-  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.status, 0);
+  assert.match(result.stdout, /\[hard-reset\] cleared persisted watch files/);
+  assert.equal(result.stderr, '');
   assert.equal(fs.existsSync(watchPaths.stateFile), false);
   assert.equal(fs.existsSync(watchPaths.pokedexFile), false);
   assert.equal(fs.existsSync(mockPaths.stateFile), true);
