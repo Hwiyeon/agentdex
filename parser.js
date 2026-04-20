@@ -335,6 +335,22 @@ function setExtendedContext(enabled) {
   _extendedContext = !!enabled;
 }
 
+// Ratio (0 < r <= 1) applied to raw contextMax so HP hits 0 when Claude Code's
+// auto-compaction threshold (CLAUDE_AUTOCOMPACT_PCT_OVERRIDE) is reached.
+// 1 = disabled (use raw model capacity).
+let _autoCompactRatio = 1;
+
+function setAutoCompactRatio(ratio) {
+  const r = Number(ratio);
+  if (Number.isFinite(r) && r > 0 && r <= 1) _autoCompactRatio = r;
+  else _autoCompactRatio = 1;
+}
+
+function applyAutoCompactRatio(rawMax) {
+  if (!(rawMax > 0)) return rawMax;
+  return Math.round(rawMax * _autoCompactRatio);
+}
+
 function modelContextMax(model) {
   const m = String(model).toLowerCase();
   // Haiku is always 200K
@@ -535,7 +551,8 @@ function normalizeEntry(entry, context) {
       outputMeta.model = model;
     }
     const sessionContextMax = readSessionContextMax(baseMeta.sessionId);
-    outputMeta.contextMax = sessionContextMax || modelContextMax(model || '');
+    const rawContextMax = sessionContextMax || modelContextMax(model || '');
+    outputMeta.contextMax = applyAutoCompactRatio(rawContextMax);
 
     events.push({
       type: EVENT_TYPES.ASSISTANT_OUTPUT,
@@ -602,5 +619,6 @@ function normalizeLine(line, context) {
 module.exports = {
   EVENT_TYPES,
   normalizeLine,
-  setExtendedContext
+  setExtendedContext,
+  setAutoCompactRatio
 };

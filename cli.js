@@ -6,7 +6,7 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 
-const { EVENT_TYPES, setExtendedContext } = require('./parser');
+const { EVENT_TYPES, setExtendedContext, setAutoCompactRatio } = require('./parser');
 const { AgentState } = require('./state');
 const { TranscriptWatcher } = require('./watcher');
 const { DashboardServer } = require('./server');
@@ -846,16 +846,57 @@ async function run() {
     }
   });
 
-  // Detect extended context (1M) from Claude Code settings
-  try {
-    const settingsPath = path.join(os.homedir(), '.claude', 'settings.json');
-    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
-    const modelSetting = typeof settings.model === 'string' ? settings.model : '';
-    const extended = modelSetting.includes('[1m]');
-    setExtendedContext(extended);
-    process.stdout.write(`[config] claude model="${modelSetting}" extendedContext=${extended}\n`);
-  } catch (_) {
-    // settings not found — default to 200K
+  // Read Claude Code settings (cross-platform: os.homedir() → ~/.claude on
+  // Linux/macOS, %USERPROFILE%\.claude on Windows). Project-scoped files take
+  // precedence over the user-global file, matching Claude Code's own order.
+  const settingsCandidates = [
+    path.join(process.cwd(), '.claude', 'settings.local.json'),
+    path.join(process.cwd(), '.claude', 'settings.json'),
+    path.join(os.homedir(), '.claude', 'settings.json')
+  ];
+  const loadedSettings = [];
+  for (const p of settingsCandidates) {
+    try {
+      loadedSettings.push({ path: p, data: JSON.parse(fs.readFileSync(p, 'utf8')) });
+    } catch (_) { /* missing or unreadable — skip */ }
+  }
+
+  // Detect extended context (1M) from the first settings file that sets a model.
+  let modelSetting = '';
+  for (const { data } of loadedSettings) {
+    if (typeof data.model === 'string' && data.model) { modelSetting = data.model; break; }
+  }
+  const extended = modelSetting.includes('[1m]');
+  setExtendedContext(extended);
+  process.stdout.write(`[config] claude model="${modelSetting}" extendedContext=${extended}\n`);
+
+  // Detect CLAUDE_AUTOCOMPACT_PCT_OVERRIDE. Precedence: process env > project
+  // local > project shared > user global. Stored as 1–100 integer percent.
+  let autoCompactPct = null;
+  let autoCompactSource = null;
+  const envOverride = process.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE;
+  if (envOverride !== undefined && envOverride !== '') {
+    const v = Number(envOverride);
+    if (Number.isFinite(v) && v > 0 && v <= 100) {
+      autoCompactPct = v;
+      autoCompactSource = 'process.env';
+    }
+  }
+  if (autoCompactPct === null) {
+    for (const { path: p, data } of loadedSettings) {
+      const raw = data && data.env && data.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE;
+      if (raw === undefined || raw === null || raw === '') continue;
+      const v = Number(raw);
+      if (Number.isFinite(v) && v > 0 && v <= 100) {
+        autoCompactPct = v;
+        autoCompactSource = p;
+        break;
+      }
+    }
+  }
+  if (autoCompactPct !== null) {
+    setAutoCompactRatio(autoCompactPct / 100);
+    process.stdout.write(`[config] CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=${autoCompactPct} (source=${autoCompactSource})\n`);
   }
 
   // Restore persisted state from disk
