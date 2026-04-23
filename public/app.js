@@ -2567,14 +2567,18 @@
     var fh = rateLimits.five_hour;
     var sd = rateLimits.seven_day;
     if (fh && typeof fh.used_percentage === 'number') {
-      var used5 = Math.min(100, Math.max(0, fh.used_percentage));
+      var stale5 = fh.resets_at && fh.resets_at * 1000 < Date.now();
+      var used5 = stale5 ? 0 : Math.min(100, Math.max(0, fh.used_percentage));
       var remain5 = 100 - used5;
       var color5 = hpBarColor(remain5 / 100);
       rate5hFillEl.style.width = remain5.toFixed(1) + '%';
       rate5hFillEl.style.background = color5;
       rate5hPctEl.textContent = remain5.toFixed(1) + '%';
       rate5hPctEl.style.color = color5;
-      rate5hFillEl.parentElement.parentElement.setAttribute('data-tooltip', '5H: ' + remain5.toFixed(1) + '% remaining\n' + formatRemainingShort(fh.resets_at) + ' left');
+      var tooltip5 = stale5
+        ? '5H: 100.0% remaining\nwindow reset (awaiting next API call)'
+        : '5H: ' + remain5.toFixed(1) + '% remaining\n' + formatRemainingShort(fh.resets_at) + ' left';
+      rate5hFillEl.parentElement.parentElement.setAttribute('data-tooltip', tooltip5);
     }
     if (sd && typeof sd.used_percentage === 'number') {
       var used7 = Math.min(100, Math.max(0, sd.used_percentage));
