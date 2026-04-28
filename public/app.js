@@ -2558,6 +2558,19 @@
     return mo + ' ' + day + ' ' + hh + ':' + mm;
   }
 
+  // Mark rate-limit data as stale if the writer (statusline-command.sh) hasn't run in
+  // a while. statusline only fires from CLI sessions, so VSCode-only usage produces a
+  // file that never updates — stale-flag the UI to avoid showing a fresh-looking value.
+  var RATE_LIMIT_STALE_AFTER_MS = 10 * 60 * 1000;
+
+  function formatStaleAge(ms) {
+    var min = Math.round(ms / 60000);
+    if (min < 60) return min + 'm ago';
+    var h = Math.floor(min / 60);
+    var rem = min % 60;
+    return rem === 0 ? h + 'h ago' : h + 'h ' + rem + 'm ago';
+  }
+
   function updateRateLimits(rateLimits) {
     if (!rateLimits) {
       rateLimitsWrapEl.hidden = true;
@@ -2566,6 +2579,11 @@
     rateLimitsWrapEl.hidden = false;
     var fh = rateLimits.five_hour;
     var sd = rateLimits.seven_day;
+    var writtenAtMs = typeof rateLimits.writtenAtMs === 'number' ? rateLimits.writtenAtMs : null;
+    var staleAge = writtenAtMs ? Date.now() - writtenAtMs : null;
+    var isStale = staleAge !== null && staleAge > RATE_LIMIT_STALE_AFTER_MS;
+    var staleSuffix = isStale ? '\nstatusline not updating — last write ' + formatStaleAge(staleAge) : '';
+    var staleOpacity = isStale ? '0.4' : '1';
     if (fh && typeof fh.used_percentage === 'number') {
       var stale5 = fh.resets_at && fh.resets_at * 1000 < Date.now();
       var used5 = stale5 ? 0 : Math.min(100, Math.max(0, fh.used_percentage));
@@ -2573,12 +2591,14 @@
       var color5 = hpBarColor(remain5 / 100);
       rate5hFillEl.style.width = remain5.toFixed(1) + '%';
       rate5hFillEl.style.background = color5;
+      rate5hFillEl.style.opacity = staleOpacity;
       rate5hPctEl.textContent = remain5.toFixed(1) + '%';
       rate5hPctEl.style.color = color5;
+      rate5hPctEl.style.opacity = staleOpacity;
       var tooltip5 = stale5
         ? '5H: 100.0% remaining\nwindow reset (awaiting next API call)'
         : '5H: ' + remain5.toFixed(1) + '% remaining\n' + formatRemainingShort(fh.resets_at) + ' left';
-      rate5hFillEl.parentElement.parentElement.setAttribute('data-tooltip', tooltip5);
+      rate5hFillEl.parentElement.parentElement.setAttribute('data-tooltip', tooltip5 + staleSuffix);
     }
     if (sd && typeof sd.used_percentage === 'number') {
       var used7 = Math.min(100, Math.max(0, sd.used_percentage));
@@ -2586,9 +2606,11 @@
       var color7 = hpBarColor(remain7 / 100);
       rate7dFillEl.style.width = remain7.toFixed(1) + '%';
       rate7dFillEl.style.background = color7;
+      rate7dFillEl.style.opacity = staleOpacity;
       rate7dPctEl.textContent = remain7.toFixed(1) + '%';
       rate7dPctEl.style.color = color7;
-      rate7dFillEl.parentElement.parentElement.setAttribute('data-tooltip', '7D: ' + remain7.toFixed(1) + '% remaining\nresets ' + formatResetAtShort(sd.resets_at));
+      rate7dPctEl.style.opacity = staleOpacity;
+      rate7dFillEl.parentElement.parentElement.setAttribute('data-tooltip', '7D: ' + remain7.toFixed(1) + '% remaining\nresets ' + formatResetAtShort(sd.resets_at) + staleSuffix);
     }
   }
 

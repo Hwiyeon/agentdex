@@ -8,7 +8,15 @@ function readRateLimits(options = {}) {
   const homeDir = options.homeDir || os.homedir();
   try {
     const metaPath = path.join(homeDir, '.claude', 'context_meta', '_rate_limits.json');
-    return JSON.parse(fs.readFileSync(metaPath, 'utf8')).rate_limits || null;
+    const data = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
+    if (!data.rate_limits) return null;
+    // Surface the writer timestamp so the UI can detect stale data when statusline
+    // hasn't fired (e.g. VSCode-only sessions, where statusline-command.sh never runs).
+    const tsSec = Number(data.ts);
+    return {
+      ...data.rate_limits,
+      writtenAtMs: Number.isFinite(tsSec) ? Math.floor(tsSec * 1000) : null
+    };
   } catch (_) {
     return null;
   }

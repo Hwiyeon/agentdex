@@ -383,6 +383,26 @@ function readSessionContextMax(sessionId) {
   return null;
 }
 
+// VSCode sessions don't trigger statusline-command.sh, so context_meta/{sessionId}.json
+// is never written and readSessionContextMax returns null. Fall back to inferring from
+// observed token usage: a session whose contextUsed ever exceeded 200K must be on the
+// 1M tier (200K-tier sessions cannot exceed their cap).
+const _maxContextUsedBySession = new Map();
+
+function noteContextUsed(sessionId, contextUsed) {
+  if (!sessionId || !(contextUsed > 0)) return;
+  const prev = _maxContextUsedBySession.get(sessionId) || 0;
+  if (contextUsed > prev) _maxContextUsedBySession.set(sessionId, contextUsed);
+}
+
+function inferContextMaxFromUsage(sessionId, model) {
+  const used = _maxContextUsedBySession.get(sessionId) || 0;
+  if (used <= 200000) return null;
+  const m = String(model || '').toLowerCase();
+  if (m.includes('opus') || m.includes('sonnet')) return 1000000;
+  return null;
+}
+
 function normalizeEntry(entry, context) {
   const ts = toMs(
     pick(entry, ['ts', 'timestamp', 'time', 'created_at', 'createdAt', 'meta.ts', 'metadata.timestamp'])
@@ -539,19 +559,22 @@ function normalizeEntry(entry, context) {
       const totalTokens = inputTokens + outputTokens + cacheRead + cacheCreate;
       if (contextUsed > 0) {
         outputMeta.contextUsed = contextUsed;
+        noteContextUsed(baseMeta.sessionId, contextUsed);
       }
       if (totalTokens > 0) {
         outputMeta.totalTokens = totalTokens;
       }
     }
 
-    // Derive context max: prefer statusline-exported value, fall back to model heuristic
+    // Derive context max: statusline-exported value (CLI) > usage-inferred 1M (VSCode w/
+    // observed >200K) > model heuristic from global settings.
     const model = pick(entry, ['message.model', 'model']);
     if (model && typeof model === 'string') {
       outputMeta.model = model;
     }
     const sessionContextMax = readSessionContextMax(baseMeta.sessionId);
-    const rawContextMax = sessionContextMax || modelContextMax(model || '');
+    const inferredContextMax = sessionContextMax ? null : inferContextMaxFromUsage(baseMeta.sessionId, model);
+    const rawContextMax = sessionContextMax || inferredContextMax || modelContextMax(model || '');
     outputMeta.contextMax = applyAutoCompactRatio(rawContextMax);
 
     events.push({
