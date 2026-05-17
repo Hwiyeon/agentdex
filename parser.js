@@ -436,6 +436,7 @@ function normalizeEntry(entry, context) {
       : fallbackAgentId;
 
   const baseMeta = {
+    provider: context.provider || 'claude',
     projectId,
     sessionId,
     parentId,

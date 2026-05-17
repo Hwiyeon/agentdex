@@ -6,7 +6,7 @@ const path = require('path');
 const os = require('os');
 const EventEmitter = require('events');
 const { StringDecoder } = require('string_decoder');
-const { normalizeLine } = require('./parser');
+const { normalizeLine: normalizeClaudeLine } = require('./parser');
 
 const DEFAULT_SCAN_INTERVAL_MS = 2500;
 const DEFAULT_INITIAL_READ_BYTES = 128 * 1024;
@@ -15,6 +15,9 @@ class TranscriptWatcher extends EventEmitter {
   constructor(options = {}) {
     super();
     this.rootPath = path.resolve(options.rootPath || path.join(os.homedir(), '.claude', 'projects'));
+    this.provider = options.provider || 'claude';
+    this.label = options.label || (this.provider === 'codex' ? 'Codex' : 'Claude');
+    this.normalizeLine = typeof options.normalizeLine === 'function' ? options.normalizeLine : normalizeClaudeLine;
     this.scanIntervalMs = options.scanIntervalMs || DEFAULT_SCAN_INTERVAL_MS;
     this.initialReadBytes = options.initialReadBytes || DEFAULT_INITIAL_READ_BYTES;
     this.staleTimeoutMs = options.staleTimeoutMs || 28800 * 1000;
@@ -41,7 +44,7 @@ class TranscriptWatcher extends EventEmitter {
     }, this.scanIntervalMs);
     this.scanTimer.unref();
 
-    this.emit('info', `watching Claude transcripts under ${this.rootPath}`);
+    this.emit('info', `watching ${this.label} transcripts under ${this.rootPath}`);
   }
 
   async stop() {
@@ -319,11 +322,12 @@ class TranscriptWatcher extends EventEmitter {
         const line = rawLine.trim();
         if (!line) continue;
 
-        const events = normalizeLine(line, {
-          filePath,
-          configuredRoot: this.rootPath,
-          agentMeta: state.agentMeta || null
-        });
+          const events = this.normalizeLine(line, {
+            filePath,
+            configuredRoot: this.rootPath,
+            provider: this.provider,
+            agentMeta: state.agentMeta || null
+          });
 
         for (const event of events) {
           if (event.meta && event.meta.sessionDisplayName) {
@@ -361,9 +365,10 @@ class TranscriptWatcher extends EventEmitter {
         const line = lines[i].trim();
         if (!line) continue;
 
-        const events = normalizeLine(line, {
+        const events = this.normalizeLine(line, {
           filePath,
           configuredRoot: this.rootPath,
+          provider: this.provider,
           agentMeta: state.agentMeta || null
         });
 
@@ -465,9 +470,10 @@ class TranscriptWatcher extends EventEmitter {
           continue;
         }
 
-        const normalizedEvents = normalizeLine(line, {
+        const normalizedEvents = this.normalizeLine(line, {
           filePath,
           configuredRoot: this.rootPath,
+          provider: this.provider,
           agentMeta: state.agentMeta || null
         });
 

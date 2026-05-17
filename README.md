@@ -4,17 +4,17 @@
 
 ![PokéAgent-Safari overworld](imgs/overworld.jpg)
 
-> *Your Claude Code agents become Pokemon.*
+> *Your Claude Code and Codex agents become Pokemon.*
 >
 > *Gotta Monitor 'Em All!*
 
-`poke-agent-safari` is a live web dashboard for Claude Code agents.
+`poke-agent-safari` is a live web dashboard for Claude Code and Codex agents.
 
 Every active session gets assigned a Pokemon and dropped onto a tiny island map — so you can see at a glance what's running, what's waiting, and which sessions are burning through tokens the fastest.
 
 ## At A Glance
 
-- `Active Pokemon` — the Claude Code agents currently running on your machine
+- `Active Pokemon` — the Claude Code and Codex agents currently running on your machine
 - `HP` — remaining context window for that session
 - `EXP` and `LV` — token usage surfaced as RPG-style progress
 - `Status` — thinking, using a tool, outputting, waiting, or sleeping
@@ -96,7 +96,7 @@ node tools/setup_poke_assets.js
 ```
 
 - No external npm dependencies.
-- Watches Claude Code transcripts under `~/.claude/projects` by default.
+- Watches Claude Code transcripts under `~/.claude/projects` by default, or Codex sessions under `~/.codex/sessions` with `--source codex`.
 - `setup_poke_assets.js` pulls the sprite set from the [PokeAPI sprites repository](https://github.com/PokeAPI/sprites) into `public/vendor/pokeapi-sprites`.
 
 ## Quick Start
@@ -108,12 +108,24 @@ node cli.js watch
 
 Open `http://127.0.0.1:8123`.
 
+To watch Codex sessions instead:
+
+```bash
+node cli.js watch --source codex
+```
+
+To watch both providers in one dashboard:
+
+```bash
+node cli.js watch --source all
+```
+
 ### Commands
 
 ```bash
-node cli.js watch [--port 8123]
+node cli.js watch [--source claude|codex|all] [--port 8123]
 node cli.js mock [--port 8123] 
-node cli.js hard-reset [watch|mock]
+node cli.js hard-reset [watch|mock] [--source claude|codex|all]
 node cli.js help
 ```
 
@@ -123,7 +135,7 @@ Available in both `watch` and `mock` via the dashboard button.
 
 - In `watch`: clears boxed history and Pokedex progress, keeps only currently active top-level agents on screen, and re-primes the watcher to the current end of each transcript so old history isn't replayed.
 - In `mock`: clears the mock snapshot and Pokedex files, then reseeds a fresh scene.
-- `node cli.js hard-reset [watch|mock]` does the same without starting the dashboard.
+- `node cli.js hard-reset [watch|mock] [--source claude|codex|all]` does the same without starting the dashboard.
 
 ## Mock Mode
 

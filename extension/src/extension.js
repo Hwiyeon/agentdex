@@ -11,11 +11,20 @@ const bootstrap = require('../../bootstrap');
 const configResolver = require('../../configResolver');
 const { createMockDriver } = require('../../mockDriver');
 const { applyClaudeEnvironment } = require('../../claudeSettings');
+const { normalizeCodexLine } = require('../../codexParser');
 const { buildWebviewHtml } = require('./htmlTemplate');
 const { createWebviewBridge } = require('./webviewBridge');
 const { ensureSprites, readInstallState } = require('./assetManager');
 
 const runtimes = new Map();
+
+function hasSource(source, target) {
+  return source === 'all' || source === target;
+}
+
+function runtimeKey(mode, source) {
+  return mode === 'mock' ? 'mock' : `watch:${source || 'claude'}`;
+}
 
 function createAgentState(mode, config) {
   return new AgentState({
@@ -34,10 +43,15 @@ function createAgentState(mode, config) {
   });
 }
 
-function extensionPersistPaths(globalStoragePath, mode) {
+function extensionPersistPaths(globalStoragePath, mode, source = 'claude') {
+  const normalizedSource = configResolver.normalizeSource(source, 'claude');
+  const watchBaseDir = normalizedSource === 'claude'
+    ? globalStoragePath
+    : path.join(globalStoragePath, 'runtime', normalizedSource);
+
   return bootstrap.resolvePersistPaths({
     mode,
-    watchBaseDir: globalStoragePath,
+    watchBaseDir,
     mockBaseDir: path.join(globalStoragePath, 'runtime', 'mock')
   });
 }
@@ -51,51 +65,94 @@ function getExtensionSettings() {
   };
 }
 
-async function ensureRuntime(context, mode) {
-  if (runtimes.has(mode)) {
-    return runtimes.get(mode);
+function createWatchDrivers(source, runtimeConfig, state) {
+  const drivers = [];
+  if (hasSource(source, 'claude')) {
+    drivers.push(new TranscriptWatcher({
+      provider: 'claude',
+      label: 'Claude Code',
+      rootPath: runtimeConfig.claudeProjectsPath,
+      staleTimeoutMs: runtimeConfig.staleTimeoutSec * 1000
+    }));
+  }
+  if (hasSource(source, 'codex')) {
+    drivers.push(new TranscriptWatcher({
+      provider: 'codex',
+      label: 'Codex',
+      rootPath: runtimeConfig.codexSessionsPath,
+      normalizeLine: normalizeCodexLine,
+      staleTimeoutMs: runtimeConfig.staleTimeoutSec * 1000
+    }));
   }
 
-  applyClaudeEnvironment();
+  for (const driver of drivers) {
+    driver.on('info', (message) => console.log(`[watcher] ${message}`));
+    driver.on('warn', (message) => console.warn(`[watcher] ${message}`));
+    driver.on('event', (event) => state.applyEvent(event));
+  }
+
+  return drivers;
+}
+
+function createRuntimeWatcherFacade(drivers) {
+  if (!drivers || drivers.length === 0) return null;
+  if (drivers.length === 1) return drivers[0];
+  return {
+    on(eventName, listener) {
+      for (const driver of drivers) {
+        driver.on(eventName, listener);
+      }
+    },
+    off(eventName, listener) {
+      for (const driver of drivers) {
+        driver.off(eventName, listener);
+      }
+    },
+    resetToCurrentEnd() {
+      return Promise.all(drivers.map((driver) => driver.resetToCurrentEnd()));
+    }
+  };
+}
+
+async function ensureRuntime(context, mode, source = 'claude') {
+  const key = runtimeKey(mode, source);
+  if (runtimes.has(key)) {
+    return runtimes.get(key);
+  }
+
+  if (mode === 'watch' && hasSource(source, 'claude')) {
+    applyClaudeEnvironment();
+  }
 
   const settings = getExtensionSettings();
   const runtimeConfig = configResolver.resolveUnified({
     source: 'extension',
     vscodeConfig: settings.config,
     env: process.env,
-    cli: { command: mode, args: {} }
+    cli: { command: mode, args: { source } }
   });
 
   const globalStoragePath = context.globalStorageUri.fsPath;
-  const persistPaths = extensionPersistPaths(globalStoragePath, mode);
+  const persistPaths = extensionPersistPaths(globalStoragePath, mode, source);
   const state = createAgentState(mode, runtimeConfig);
 
   bootstrap.loadState(state, persistPaths);
   bootstrap.loadPokedex(state, persistPaths);
   bootstrap.savePokedex(state, persistPaths);
 
-  if (mode === 'watch') {
+  if (mode === 'watch' && source === 'claude') {
     const startup = bootstrap.runStartupZombieBoxing(state);
     if (startup.boxedCount > 0) {
       bootstrap.saveState(state, persistPaths);
     }
   }
 
-  const driver = mode === 'watch'
-    ? new TranscriptWatcher({
-      rootPath: runtimeConfig.claudeProjectsPath,
-      staleTimeoutMs: runtimeConfig.staleTimeoutSec * 1000
-    })
-    : createMockDriver(state);
-
-  if (mode === 'watch') {
-    driver.on('info', (message) => console.log(`[watcher] ${message}`));
-    driver.on('warn', (message) => console.warn(`[watcher] ${message}`));
-    driver.on('event', (event) => state.applyEvent(event));
-  }
+  const drivers = mode === 'watch' ? createWatchDrivers(source, runtimeConfig, state) : [];
+  const driver = mode === 'watch' ? createRuntimeWatcherFacade(drivers) : createMockDriver(state);
 
   const publicConfig = {
     mode,
+    source: mode === 'watch' ? source : 'mock',
     enablePokeapiSprites: !!(settings.useSprites && runtimeConfig.enablePokeapiSprites),
     isMockMode: mode === 'mock',
     supportsHardReset: true
@@ -103,8 +160,10 @@ async function ensureRuntime(context, mode) {
 
   const runtime = {
     mode,
+    source,
     state,
     driver,
+    drivers,
     runtimeConfig,
     persistPaths,
     publicConfig,
@@ -134,7 +193,7 @@ async function ensureRuntime(context, mode) {
     }
   });
 
-  runtimes.set(mode, runtime);
+  runtimes.set(key, runtime);
   return runtime;
 }
 
@@ -146,8 +205,12 @@ async function startRuntime(runtime) {
 
   if (runtime.mode === 'watch') {
     const skipInitialTail = bootstrap.consumeResetFlag(runtime.persistPaths);
-    await runtime.driver.start({ skipInitialTail });
-    runtime.timers.pidCheck = bootstrap.startPeriodicPidCheck(runtime.state);
+    for (const driver of runtime.drivers) {
+      await driver.start({ skipInitialTail });
+    }
+    if (hasSource(runtime.source, 'claude')) {
+      runtime.timers.pidCheck = bootstrap.startPeriodicPidCheck(runtime.state);
+    }
   } else {
     runtime.driver.start();
   }
@@ -165,7 +228,9 @@ async function stopRuntime(runtime) {
   bootstrap.savePokedex(runtime.state, runtime.persistPaths);
 
   if (runtime.mode === 'watch') {
-    await runtime.driver.stop();
+    for (const driver of runtime.drivers) {
+      await driver.stop();
+    }
   } else {
     runtime.driver.stop();
   }
@@ -238,20 +303,21 @@ function buildPanelHtml(context, panel, assetRoot) {
   });
 }
 
-async function openPanel(context, mode) {
+async function openPanel(context, mode, source = 'claude') {
   const assetState = await ensureAssets(context);
   if (assetState.cancelled) {
     return;
   }
 
-  const runtime = await ensureRuntime(context, mode);
+  const runtime = await ensureRuntime(context, mode, source);
   runtime.publicConfig.enablePokeapiSprites = !!assetState.enabled && runtime.runtimeConfig.enablePokeapiSprites;
 
   if (runtime.panelCount === 0) {
     await startRuntime(runtime);
   }
 
-  const title = mode === 'mock' ? 'Agent Safari (Mock)' : 'Agent Safari';
+  const sourceTitle = source === 'codex' ? ' (Codex)' : source === 'all' ? ' (All)' : '';
+  const title = mode === 'mock' ? 'Agent Safari (Mock)' : `Agent Safari${sourceTitle}`;
   const panel = vscode.window.createWebviewPanel(
     'pokeAgentSafari',
     title,
@@ -280,8 +346,9 @@ async function openPanel(context, mode) {
 }
 
 async function runHardResetCommand(context) {
-  const mode = (runtimes.get('mock') && runtimes.get('mock').panelCount > 0) ? 'mock' : 'watch';
-  const runtime = runtimes.get(mode);
+  const runtime = Array.from(runtimes.values()).find((item) => item.panelCount > 0) || runtimes.get(runtimeKey('watch', 'claude'));
+  const mode = runtime ? runtime.mode : 'watch';
+  const source = runtime ? runtime.source : 'claude';
   if (runtime) {
     bootstrap.performDashboardHardReset({
       command: mode,
@@ -293,12 +360,12 @@ async function runHardResetCommand(context) {
     return;
   }
 
-  const persistPaths = extensionPersistPaths(context.globalStorageUri.fsPath, mode);
+  const persistPaths = extensionPersistPaths(context.globalStorageUri.fsPath, mode, source);
   bootstrap.clearPersistedFiles(persistPaths);
   if (mode === 'watch') {
     bootstrap.markResetFlag(persistPaths);
   }
-  vscode.window.showInformationMessage(`Agent Safari ${mode} data reset.`);
+  vscode.window.showInformationMessage(`Agent Safari ${mode}/${source} data reset.`);
 }
 
 async function runAssetDownload(context) {
@@ -309,8 +376,10 @@ async function activate(context) {
   fs.mkdirSync(context.globalStorageUri.fsPath, { recursive: true });
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('pokeAgentSafari.open', () => openPanel(context, 'watch')),
-    vscode.commands.registerCommand('pokeAgentSafari.openMock', () => openPanel(context, 'mock')),
+    vscode.commands.registerCommand('pokeAgentSafari.open', () => openPanel(context, 'watch', 'claude')),
+    vscode.commands.registerCommand('pokeAgentSafari.openCodex', () => openPanel(context, 'watch', 'codex')),
+    vscode.commands.registerCommand('pokeAgentSafari.openAll', () => openPanel(context, 'watch', 'all')),
+    vscode.commands.registerCommand('pokeAgentSafari.openMock', () => openPanel(context, 'mock', 'mock')),
     vscode.commands.registerCommand('pokeAgentSafari.hardReset', () => runHardResetCommand(context)),
     vscode.commands.registerCommand('pokeAgentSafari.downloadAssets', () => runAssetDownload(context))
   );

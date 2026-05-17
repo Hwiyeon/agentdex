@@ -16,6 +16,8 @@
   ],
   "activationEvents": [
     "onCommand:pokeAgentSafari.open",
+    "onCommand:pokeAgentSafari.openCodex",
+    "onCommand:pokeAgentSafari.openAll",
     "onCommand:pokeAgentSafari.openMock",
     "onCommand:pokeAgentSafari.hardReset",
     "onCommand:pokeAgentSafari.downloadAssets"
@@ -25,6 +27,14 @@
       {
         "command": "pokeAgentSafari.open",
         "title": "Agent Safari: Open (Watch)"
+      },
+      {
+        "command": "pokeAgentSafari.openCodex",
+        "title": "Agent Safari: Open (Watch Codex)"
+      },
+      {
+        "command": "pokeAgentSafari.openAll",
+        "title": "Agent Safari: Open (Watch All)"
       },
       {
         "command": "pokeAgentSafari.openMock",
@@ -64,6 +74,10 @@
           "type": "string",
           "default": ""
         },
+        "pokeAgentSafari.codexSessionsPath": {
+          "type": "string",
+          "default": ""
+        },
         "pokeAgentSafari.activeTimeoutSec": {
           "type": "number",
           "default": 600
@@ -78,6 +92,7 @@
   "files": [
     "bootstrap.js",
     "claudeSettings.js",
+    "codexParser.js",
     "configResolver.js",
     "extension/src/**/*.js",
     "extension/README.md",
@@ -101,7 +116,7 @@
     "setup:assets": "node tools/setup_poke_assets.js",
     "watch": "node cli.js watch",
     "mock": "node cli.js mock",
-    "test": "node test/claude-code-transcripts.test.js && node test/review-fixes.test.js && node test/pokedex.test.js && node test/setup-scripts.test.js && node test/cli-persistence.test.js && node test/extension-webview-bridge.test.js && node test/extension-html-template.test.js && node test/extension-asset-manager.test.js && node test/shared-snapshot.test.js",
+    "test": "node test/claude-code-transcripts.test.js && node test/codex-transcripts.test.js && node test/review-fixes.test.js && node test/pokedex.test.js && node test/setup-scripts.test.js && node test/cli-persistence.test.js && node test/extension-webview-bridge.test.js && node test/extension-html-template.test.js && node test/extension-asset-manager.test.js && node test/shared-snapshot.test.js",
     "package:vsix": "vsce package --no-dependencies",
     "publish:vsce": "vsce publish",
     "publish:ovsx": "ovsx publish"

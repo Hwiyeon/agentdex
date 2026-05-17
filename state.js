@@ -52,6 +52,7 @@ function cloneAgentRecord(agent) {
     name: agent.name || agent.agentId,
     displayName: agent.displayName || null,
     subagentType: agent.subagentType || null,
+    provider: agent.provider || 'claude',
     projectId: agent.projectId || 'unknown-project',
     sessionId: agent.sessionId || 'unknown-session',
     parentId: agent.parentId || undefined,
@@ -71,6 +72,10 @@ function cloneAgentRecord(agent) {
     totalTokens: agent.totalTokens || 0,
     counters: cloneCounters(agent.counters)
   };
+}
+
+function isFallbackProjectId(projectId) {
+  return typeof projectId === 'string' && /^codex-\d{4}-\d{2}-\d{2}$/.test(projectId);
 }
 
 function isSubagent(agent) {
@@ -129,6 +134,7 @@ class AgentState extends EventEmitter {
     this.subagentHistory = [];
     this.recentEvents = [];
     this.lastUpdate = 0;
+    this.rateLimits = null;
     this.seenPokemonIds = new Set();
     this.firstDiscoveryByPokemon = {};
     this.confirmedSessionIds = new Set(); // sessionIds confirmed alive via PID check
@@ -153,6 +159,7 @@ class AgentState extends EventEmitter {
     return {
       agentId,
       agentName: source.displayName || meta.agentDescription || meta.sessionDisplayName || source.subagentType || meta.subagentType || agentId,
+      provider: meta.provider || source.provider || 'claude',
       projectId: meta.projectId || source.projectId || 'unknown-project',
       sessionId: meta.sessionId || source.sessionId || 'unknown-session',
       createdAt: source.createdAt || ts,
@@ -306,6 +313,7 @@ class AgentState extends EventEmitter {
         name: agentId,
         displayName: null,
         subagentType: null,
+        provider: meta.provider || 'claude',
         projectId: meta.projectId || 'unknown-project',
         sessionId: meta.sessionId || 'unknown-session',
         parentId: meta.parentId && meta.parentId !== agentId ? meta.parentId : undefined,
@@ -329,8 +337,11 @@ class AgentState extends EventEmitter {
     }
 
     agent.lastSeen = Math.max(agent.lastSeen || 0, ts);
-    if (meta.projectId) {
+    if (meta.projectId && (!isFallbackProjectId(meta.projectId) || isFallbackProjectId(agent.projectId) || agent.projectId === 'unknown-project')) {
       agent.projectId = meta.projectId;
+    }
+    if (meta.provider) {
+      agent.provider = meta.provider;
     }
     if (meta.sessionId) {
       agent.sessionId = meta.sessionId;
@@ -412,6 +423,9 @@ class AgentState extends EventEmitter {
 
     const ts = typeof event.ts === 'number' ? event.ts : Date.now();
     const meta = event.meta || {};
+    if (meta.rateLimits) {
+      this.rateLimits = meta.rateLimits;
+    }
 
     // Suppress sessions that were active before a hard reset / startup cleanup.
     // Only unsuppress on USER_QUERY that is genuinely NEW (timestamp > boxed doneAt).
@@ -450,6 +464,7 @@ class AgentState extends EventEmitter {
           name: boxed.agentId,
           displayName: boxed.displayName || null,
           subagentType: boxed.subagentType || null,
+          provider: boxed.provider || 'claude',
           projectId: boxed.projectId,
           sessionId: boxed.sessionId,
           parentId: undefined,
@@ -464,6 +479,7 @@ class AgentState extends EventEmitter {
           createdAt: boxed.createdAt || ts,
           contextUsed: boxed.contextUsed || 0,
           contextMax: boxed.contextMax || 200000,
+          model: boxed.model || null,
           selfTokens: boxed.selfTokens || 0,
           totalTokens: boxed.totalTokens || 0,
           counters: cloneCounters(boxed.counters)
@@ -542,7 +558,7 @@ class AgentState extends EventEmitter {
         }
         agent.counters.toolStarts += 1;
         // Store pending description for next child agent spawned by this parent
-        if ((meta.toolName === 'Agent' || meta.toolName === 'agent') && meta.agentDescription) {
+        if ((meta.toolName === 'Agent' || meta.toolName === 'agent' || meta.toolName === 'spawn_agent') && meta.agentDescription) {
           if (!agent._pendingChildDescriptions) agent._pendingChildDescriptions = [];
           agent._pendingChildDescriptions.push({
             description: meta.agentDescription,
@@ -630,6 +646,7 @@ class AgentState extends EventEmitter {
       lifecycle: LIFECYCLE.BOXED,
       displayName: agent.displayName || null,
       subagentType: agent.subagentType || null,
+      provider: agent.provider || 'claude',
       projectId: agent.projectId,
       sessionId: agent.sessionId,
       parentId: agent.parentId || null,
@@ -662,6 +679,7 @@ class AgentState extends EventEmitter {
       lifecycle: LIFECYCLE.DONE,
       displayName: agent.displayName || null,
       subagentType: agent.subagentType || null,
+      provider: agent.provider || 'claude',
       projectId: agent.projectId,
       sessionId: agent.sessionId,
       parentId: agent.parentId || null,
@@ -754,6 +772,7 @@ class AgentState extends EventEmitter {
 
     for (const [agentId, agent] of this.agents.entries()) {
       if (agent.parentId) continue; // subagents handled elsewhere
+      if (agent.provider && agent.provider !== 'claude') continue;
 
       const pid = sessionPidMap.get(agent.sessionId);
 
@@ -823,6 +842,7 @@ class AgentState extends EventEmitter {
       name: boxed.agentId,
       displayName: boxed.displayName || null,
       subagentType: boxed.subagentType || null,
+      provider: boxed.provider || 'claude',
       projectId: boxed.projectId,
       sessionId: boxed.sessionId,
       parentId: undefined,
@@ -856,6 +876,7 @@ class AgentState extends EventEmitter {
         name: agent.name,
         displayName: agent.displayName || null,
         subagentType: agent.subagentType || null,
+        provider: agent.provider || 'claude',
         projectId: agent.projectId,
         sessionId: agent.sessionId,
         parentId: agent.parentId,
@@ -886,6 +907,7 @@ class AgentState extends EventEmitter {
       staleTimeoutSec: Math.floor(this.staleTimeoutMs / 1000),
       activeAgentCount: agents.filter((agent) => agent.isActive).length,
       pokedex: this.pokedexSnapshot(),
+      rateLimits: this.rateLimits,
       agents,
       recentEvents: this.recentEvents.slice(-80),
       boxedAgents: this.boxedAgents.slice(),
@@ -902,6 +924,7 @@ class AgentState extends EventEmitter {
         name: agent.name,
         displayName: agent.displayName || null,
         subagentType: agent.subagentType || null,
+        provider: agent.provider || 'claude',
         projectId: agent.projectId,
         sessionId: agent.sessionId,
         parentId: agent.parentId || null,
@@ -926,6 +949,7 @@ class AgentState extends EventEmitter {
       savedAt: Date.now(),
       seenPokemonIds: Array.from(this.seenPokemonIds).sort((a, b) => a - b),
       firstDiscoveryByPokemon: { ...this.firstDiscoveryByPokemon },
+      rateLimits: this.rateLimits,
       agents,
       boxedAgents: this.boxedAgents.slice(),
       subagentHistory: this.subagentHistory.slice()
@@ -936,6 +960,7 @@ class AgentState extends EventEmitter {
     if (!data || data.version !== 1) return false;
 
     this.mergeSeenPokemonIds(data.seenPokemonIds, data.firstDiscoveryByPokemon);
+    this.rateLimits = data.rateLimits || null;
     this.boxedAgents = Array.isArray(data.boxedAgents)
       ? data.boxedAgents.map((b) => (b.lifecycle ? b : { ...b, lifecycle: LIFECYCLE.BOXED }))
       : [];
@@ -951,7 +976,7 @@ class AgentState extends EventEmitter {
         // Pre-populate confirmedSessionIds so the first PID check after
         // reboot / session restart can detect dead sessions whose session
         // files have already been cleaned up.
-        if (agent.sessionId && agent.sessionId !== 'unknown-session' && !agent.parentId) {
+        if (agent.sessionId && agent.sessionId !== 'unknown-session' && !agent.parentId && agent.provider !== 'codex') {
           this.confirmedSessionIds.add(agent.sessionId);
         }
       }

@@ -17,6 +17,7 @@ function readRateLimits(options = {}) {
 function buildPublicSnapshot(state, publicConfig = {}, options = {}) {
   const config = {
     mode: publicConfig.mode || (publicConfig.isMockMode ? 'mock' : 'watch'),
+    source: publicConfig.source || (publicConfig.isMockMode ? 'mock' : 'claude'),
     enablePokeapiSprites: !!publicConfig.enablePokeapiSprites,
     isMockMode: !!publicConfig.isMockMode,
     supportsHardReset: !!publicConfig.supportsHardReset
@@ -24,7 +25,7 @@ function buildPublicSnapshot(state, publicConfig = {}, options = {}) {
 
   return {
     ...state.snapshot(),
-    rateLimits: options.rateLimits === undefined ? readRateLimits(options) : options.rateLimits,
+    rateLimits: options.rateLimits === undefined ? (state.rateLimits || readRateLimits(options)) : options.rateLimits,
     config
   };
 }

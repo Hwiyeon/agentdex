@@ -147,7 +147,7 @@ test('hard-reset command clears only the selected mode persisted files', () => {
   });
 
   assert.equal(result.status, 0);
-  assert.match(result.stdout, /\[hard-reset\] cleared persisted watch files/);
+  assert.match(result.stdout, /\[hard-reset\] cleared persisted watch\/claude files/);
   assert.equal(result.stderr, '');
   assert.equal(fs.existsSync(watchPaths.stateFile), false);
   assert.equal(fs.existsSync(watchPaths.pokedexFile), false);

@@ -7,7 +7,9 @@ const path = require('path');
 const DEFAULTS = {
   port: 8123,
   host: '127.0.0.1',
+  source: 'claude',
   claudeProjectsPath: path.join(os.homedir(), '.claude', 'projects'),
+  codexSessionsPath: path.join(os.homedir(), '.codex', 'sessions'),
   activeTimeoutSec: 600,
   staleTimeoutSec: 28800,
   enablePokeapiSprites: true
@@ -51,6 +53,14 @@ function parseNumber(rawValue, fallback) {
   }
   const parsed = Number(rawValue);
   return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function normalizeSource(rawValue, fallback = DEFAULTS.source) {
+  const value = String(rawValue || fallback || DEFAULTS.source).trim().toLowerCase();
+  if (value === 'codex' || value === 'all') {
+    return value;
+  }
+  return 'claude';
 }
 
 function parseArgv(argv) {
@@ -156,7 +166,9 @@ function resolveUnified(options = {}) {
   const vscodeLayer = {
     port: readVscodeConfig(options.vscodeConfig, 'port'),
     host: readVscodeConfig(options.vscodeConfig, 'host'),
+    source: readVscodeConfig(options.vscodeConfig, 'source'),
     claudeProjectsPath: readVscodeConfig(options.vscodeConfig, 'claudeProjectsPath'),
+    codexSessionsPath: readVscodeConfig(options.vscodeConfig, 'codexSessionsPath'),
     activeTimeoutSec: readVscodeConfig(options.vscodeConfig, 'activeTimeoutSec'),
     staleTimeoutSec: readVscodeConfig(options.vscodeConfig, 'staleTimeoutSec'),
     enablePokeapiSprites: readVscodeConfig(options.vscodeConfig, 'enablePokeapiSprites')
@@ -165,7 +177,9 @@ function resolveUnified(options = {}) {
   const envConfig = {
     port: env.PORT,
     host: env.HOST,
+    source: env.AGENT_SAFARI_SOURCE,
     claudeProjectsPath: env.CLAUDE_PROJECTS_PATH,
+    codexSessionsPath: env.CODEX_SESSIONS_PATH,
     activeTimeoutSec: env.ACTIVE_TIMEOUT_SEC,
     staleTimeoutSec: env.STALE_TIMEOUT_SEC,
     enablePokeapiSprites: env.ENABLE_POKEAPI_SPRITES
@@ -174,7 +188,9 @@ function resolveUnified(options = {}) {
   const cliConfig = {
     port: argMap.port,
     host: argMap.host,
-    claudeProjectsPath: argMap.claudeProjectsPath || argMap.path || argMap.claudePath,
+    source: argMap.source || argMap.provider,
+    claudeProjectsPath: argMap.claudeProjectsPath || argMap['claude-projects-path'] || argMap.path || argMap.claudePath || argMap['claude-path'],
+    codexSessionsPath: argMap.codexSessionsPath || argMap['codex-sessions-path'] || argMap.codexPath || argMap['codex-path'],
     activeTimeoutSec: argMap.activeTimeoutSec || argMap.activeTimeout,
     staleTimeoutSec: argMap.staleTimeoutSec || argMap.staleTimeout,
     enablePokeapiSprites: argMap.enablePokeapiSprites
@@ -191,7 +207,9 @@ function resolveUnified(options = {}) {
   const config = {
     port: parseNumber(merged.port, DEFAULTS.port),
     host: merged.host || DEFAULTS.host,
+    source: normalizeSource(merged.source, DEFAULTS.source),
     claudeProjectsPath: path.resolve(expandHome(merged.claudeProjectsPath || DEFAULTS.claudeProjectsPath)),
+    codexSessionsPath: path.resolve(expandHome(merged.codexSessionsPath || DEFAULTS.codexSessionsPath)),
     activeTimeoutSec: parseNumber(merged.activeTimeoutSec, DEFAULTS.activeTimeoutSec),
     staleTimeoutSec: parseNumber(merged.staleTimeoutSec, DEFAULTS.staleTimeoutSec),
     enablePokeapiSprites: parseBoolean(merged.enablePokeapiSprites, DEFAULTS.enablePokeapiSprites),
@@ -230,6 +248,7 @@ module.exports = {
   expandHome,
   parseBoolean,
   parseNumber,
+  normalizeSource,
   parseArgv,
   loadConfigFile,
   resolveUnified,

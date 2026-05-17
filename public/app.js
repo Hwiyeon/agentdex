@@ -2597,6 +2597,7 @@
     if (m.includes('opus')) family = 'Opus';
     else if (m.includes('sonnet')) family = 'Sonnet';
     else if (m.includes('haiku')) family = 'Haiku';
+    else if (m.includes('gpt-')) return model.toUpperCase();
     else return model;
     // Extract version: match "4-6", "4-5", etc. after the family name
     var vMatch = m.match(/(\d+)-(\d+)/);
@@ -4754,7 +4755,8 @@
         var config = (appState.snapshot && appState.snapshot.config) || {};
         if (!config.supportsHardReset) return;
         var mode = config.mode || (config.isMockMode ? 'mock' : 'watch');
-        if (!window.confirm('Reset ' + mode + ' state, boxed agents, and discovered Pokedex progress?')) return;
+        var source = config.source && config.source !== mode ? '/' + config.source : '';
+        if (!window.confirm('Reset ' + mode + source + ' state, boxed agents, and discovered Pokedex progress?')) return;
         hardResetBtnEl.disabled = true;
         try {
           var res = await transport.hardReset();
